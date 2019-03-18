@@ -16,23 +16,68 @@
         </el-carousel>
       </div>
     </div>
+    <div class="product_list_main">
+      <div class="hotsell_list_main">
+        <div class="menu_list_main_tag">热销</div>
+        <ProductList :list="foodList"></ProductList>
+      </div>
+      <div class="food_list_main">
+        <span>食物</span>
+        <ProductList></ProductList>
+      </div>
+      <div class="clothes_list_main">
+        <span>衣服</span>
+        <ProductList></ProductList>
+      </div>
+      <div class="electric_list_main">
+        <span>电器</span>
+        <ProductList></ProductList>
+      </div>
+    </div>
+    <div class="foot_main">
+        <Foot></Foot>
+    </div>
   </div>
 </template>
 
 <script>
 import Head from '@/components/Head.vue'
+import Foot from '@/components/Foot.vue'
 import MenuList from '@/components/MenuList.vue'
-
+import ProductList from '@/components/ProductList.vue'
+import axios from 'axios'
+import config from '@/assets/config/config.js'
 export default {
   name: 'home',
   components: {
-    Head, MenuList
+    Head, MenuList, ProductList, Foot
+  },
+  data: function(){
+    return {
+       foodList:{},
+       clothesList:{},
+       electricList:{},
+       hoteSellList:{}
+    }
+  },
+  beforeCreate () {
+      let baseUrl = config.host;
+      let _self = this;
+      let url = baseUrl + '/product/findAll';
+      axios.get(url).then(function (res) {
+          if(res.status !== 200){
+              return false;
+          }
+          console.log(res.data);
+          _self.foodList = res.data.data;
+      })
   }
 }
 </script>
 <style scoped>
 .home{
-  width: 100%;
+  width: 65%;
+  margin: auto;
 }
 .menu_list_main{
   /*border: 2px solid hotpink;*/
@@ -44,7 +89,7 @@ export default {
 }
 .home_header_main{
   /*border: 2px solid green;*/
-  width: 65%;
+  width: 100%;
   height: 50%;
   margin: auto;
   margin-top: 2em;
@@ -62,5 +107,15 @@ export default {
 .slide_img{
   width: 765px;
   height: 350px;
+}
+.menu_list_main_tag{
+  border: 1px solid blue;
+  text-align: left;
+  font-size: 25px;
+  font-style: italic;
+  font-weight:bold;
+}
+.product_list_main{
+  margin-top: 1em;
 }
 </style>

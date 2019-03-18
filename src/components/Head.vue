@@ -12,6 +12,7 @@
     <div class="head_right">
       <span>登录</span>
       <span>注册</span>
+      <span>建议</span>
     </div>
   </div>
 </template>
@@ -27,19 +28,23 @@ export default {
 <style scoped>
 .head_main{
   /*border: 2px solid green;*/
+  height: auto;
+  width: 100%;
   margin-top: 2em;
+  margin: auto;
+  margin-bottom: 2em;
 }
 .head_menu{
   display: inline;
   /*padding-top: 12em;*/
   /*border: 2px solid blue;*/
-  margin-right: 15em;
+  /*margin-right: 15em;*/
   margin-top: 3em;
 }
 .logo_main{
-  display: inline;
+  /*display: inline;*/
   float: left;
-  margin-left: 15em;
+  /*margin-left: 15em;*/
   /*border: 2px solid gold;*/
 }
 .logo_main img{
@@ -54,7 +59,7 @@ export default {
 .head_right{
   /*border: 2px solid red;*/
   float: right;
-  margin-right: 15em;
+  /*margin-right: 15em;*/
 }
 .head_right span{
   padding-right: 1em;
