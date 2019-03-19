@@ -17,21 +17,33 @@
       </div>
     </div>
     <div class="product_list_main">
-      <div class="hotsell_list_main">
-        <div class="menu_list_main_tag">热销</div>
+      <div class="list_main hotsell_list_main">
+        <div class="menu_list_main_tag">
+          <span class="el-icon-star-on"></span>
+          &nbsp;&nbsp;热销
+        </div>
+        <ProductList :list="hoteSellList"></ProductList>
+      </div>
+      <div class="list_main food_list_main">
+        <div class="menu_list_main_tag">
+          <span class="el-icon-goods"></span>
+          &nbsp;&nbsp;食物
+        </div>
         <ProductList :list="foodList"></ProductList>
       </div>
-      <div class="food_list_main">
-        <span>食物</span>
-        <ProductList></ProductList>
+      <div class="list_main clothes_list_main">
+        <div class="menu_list_main_tag">
+          <span class="el-icon-info"></span>
+          &nbsp;&nbsp;衣服
+        </div>
+        <ProductList :list="clothesList"></ProductList>
       </div>
-      <div class="clothes_list_main">
-        <span>衣服</span>
-        <ProductList></ProductList>
-      </div>
-      <div class="electric_list_main">
-        <span>电器</span>
-        <ProductList></ProductList>
+      <div class="list_main electric_list_main">
+        <div class="menu_list_main_tag">
+          <span class="el-icon-mobile-phone"></span>
+          &nbsp;&nbsp;电器
+        </div>
+        <ProductList :list="electricList"></ProductList>
       </div>
     </div>
     <div class="foot_main">
@@ -52,47 +64,49 @@ export default {
   components: {
     Head, MenuList, ProductList, Foot
   },
-  data: function(){
+  data: function () {
     return {
-       foodList:{},
-       clothesList:{},
-       electricList:{},
-       hoteSellList:{}
+      foodList: {},
+      clothesList: {},
+      electricList: {},
+      hoteSellList: {}
     }
   },
   beforeCreate () {
-      let baseUrl = config.host;
-      let _self = this;
-      let url = baseUrl + '/product/findAll';
+    let _self = this
+    let getDataInfo = {
+      foodList: ['/product/findAll/', 6, 'foodList'],
+      clothesList: ['/product/findAll/', 6, 'clothesList'],
+      electricList: ['/product/findAll/', 6, 'electricList'],
+      hoteSellList: ['/product/findAll/', 6, 'hoteSellList'],
+    };
+    for(let key in getDataInfo){
+      let url = config.host + getDataInfo[key][0] + getDataInfo[key][1]
+
       axios.get(url).then(function (res) {
-          if(res.status !== 200){
-              return false;
-          }
-          console.log(res.data);
-          _self.foodList = res.data.data;
+        if (res.status !== 200) {
+          return false
+      }
+      _self[getDataInfo[key][2]] = res.data.data
       })
+    }
   }
 }
 </script>
 <style scoped>
 .home{
-  width: 65%;
+  width: 70%;
   margin: auto;
 }
 .menu_list_main{
-  /*border: 2px solid hotpink;*/
   display: inline;
   float: left;
   width: 10em;
-  /*height: 20em;*/
-  /*margin-right: 1em;*/
 }
 .home_header_main{
-  /*border: 2px solid green;*/
   width: 100%;
   height: 50%;
-  margin: auto;
-  margin-top: 2em;
+  margin: 2em auto;
   background-color: gainsboro;
 }
 .home_carousel{
@@ -104,12 +118,15 @@ export default {
   line-height: 150px;
   margin: 0;
 }
+.list_main{
+  margin-bottom: 1.5em;
+}
 .slide_img{
   width: 765px;
   height: 350px;
 }
 .menu_list_main_tag{
-  border: 1px solid blue;
+  /*border: 1px solid blue;*/
   text-align: left;
   font-size: 25px;
   font-style: italic;
