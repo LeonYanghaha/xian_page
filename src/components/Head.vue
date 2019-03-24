@@ -1,18 +1,28 @@
 <template>
   <div class="head_main">
     <div class="logo_main">
-      <img src='../assets/img/logo.png'/>
+      <router-link to="/">
+        <img src='../assets/img/logo.png'/>
+      </router-link>
       <!--<p>哈哈商场</p>-->
     </div>
     <div class="head_menu">
-      <span>首页</span>
+      <router-link to="/">
+        <span>首页</span>
+      </router-link>
       <span>热销</span>
       <span>热销产品</span>
     </div>
     <div class="head_right">
-      <span>登录</span>
-      <span>注册</span>
-      <span>建议</span>
+      <router-link to="/login">
+        <span>登录</span>
+      </router-link>
+      <router-link to="/register">
+        <span>注册</span>
+      </router-link>
+      <router-link to="/">
+        <span>建议</span>
+      </router-link>
     </div>
   </div>
 </template>

@@ -1,14 +1,14 @@
 <template>
   <div class="list_main">
+    <hr/>
     <div class="sign_product" v-for="signItem of list">
       <span class="sign_product_img">
         <a target="_blank" v-bind:href="'http://127.0.0.1:8888/product/findById/'+signItem.pid">
-        <img v-bind:src="'http://127.0.0.1:8888/img/'+signItem.imgUrl">
+        <img v-bind:src="'http://127.0.0.1:8888/img/'+ signItem.productImgList[0].name ">
         </a>
       </span>
       <span class="sign_product_info">
-          <router-link to="/product">
-        <!--<a target="_blank" v-bind:href="'http://127.0.0.1:8888/product/findById/'+signItem.pid">-->
+        <router-link to="/product">
           {{signItem.name}}
         </router-link>
         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -18,7 +18,6 @@
         </span>
       </span>
     </div>
-    <hr/>
   </div>
 </template>
 

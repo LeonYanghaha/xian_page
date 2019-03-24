@@ -20,28 +20,28 @@
       <div class="list_main hotsell_list_main">
         <div class="menu_list_main_tag">
           <span class="el-icon-star-on"></span>
-          &nbsp;&nbsp;热销
+          &nbsp;&nbsp;热销&nbsp;<span class="el-icon-d-arrow-right"></span>
         </div>
         <ProductList :list="hoteSellList"></ProductList>
       </div>
       <div class="list_main food_list_main">
         <div class="menu_list_main_tag">
           <span class="el-icon-goods"></span>
-          &nbsp;&nbsp;食物
+          &nbsp;&nbsp;食物&nbsp;<span class="el-icon-d-arrow-right"></span>
         </div>
         <ProductList :list="foodList"></ProductList>
       </div>
       <div class="list_main clothes_list_main">
         <div class="menu_list_main_tag">
           <span class="el-icon-info"></span>
-          &nbsp;&nbsp;衣服
+          &nbsp;&nbsp;衣服&nbsp;<span class="el-icon-d-arrow-right"></span>
         </div>
         <ProductList :list="clothesList"></ProductList>
       </div>
       <div class="list_main electric_list_main">
         <div class="menu_list_main_tag">
           <span class="el-icon-mobile-phone"></span>
-          &nbsp;&nbsp;电器
+          &nbsp;&nbsp;电器&nbsp;<span class="el-icon-d-arrow-right"></span>
         </div>
         <ProductList :list="electricList"></ProductList>
       </div>
@@ -78,16 +78,16 @@ export default {
       foodList: ['/product/findAll/', 6, 'foodList'],
       clothesList: ['/product/findAll/', 6, 'clothesList'],
       electricList: ['/product/findAll/', 6, 'electricList'],
-      hoteSellList: ['/product/findAll/', 6, 'hoteSellList'],
-    };
-    for(let key in getDataInfo){
-      let url = config.host + getDataInfo[key][0] + getDataInfo[key][1]
-
+      hoteSellList: ['/product/findAll/', 6, 'hoteSellList']
+    }
+    for (let key in getDataInfo) {
+      let url = config.host + getDataInfo[key][0]
       axios.get(url).then(function (res) {
         if (res.status !== 200) {
           return false
-      }
-      _self[getDataInfo[key][2]] = res.data.data
+        }
+        console.log(res.data.data)
+        _self[getDataInfo[key][2]] = res.data.data
       })
     }
   }
