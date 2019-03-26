@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Product from './views/Product.vue';
+import User from './views/User.vue';
+import UserCenter from './views/UserCenter.vue';
 
 Vue.use(Router);
 
@@ -26,6 +28,18 @@ export default new Router({
       path: '/product/:pid',
       name: 'product',
       component: Product,
+      props: true
+    },
+    {
+      path: '/user/:active',
+      name: 'user',
+      component: User,
+      props: true
+    },
+    {
+      path: '/usercenter/:tag',
+      name: 'usercenter',
+      component: UserCenter,
       props: true
     }
   ]

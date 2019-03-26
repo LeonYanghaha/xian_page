@@ -7,7 +7,7 @@
       <span>联系客服</span>
       <span>加入我们</span>
       <br/>
-      <span>Copyright © 2004 - {{year}}  哈哈商城 版权所有</span>
+      <span>Copyright © 2004 - {{year}}  Haha商城 版权所有</span>
     </div>
   </div>
 </template>

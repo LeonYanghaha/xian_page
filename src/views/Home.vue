@@ -6,12 +6,12 @@
         <MeanuMain></MeanuMain>
       </div>
       <div class="home_img">
-        <el-carousel height="350px" indicator-position="outside">
+        <el-carousel height="350px">
           <el-carousel-item v-for="index in 4" :key="index">
-            <img class="slide_img" src="../assets/img/slide_1.jpg" v-if="index == 4"/>
-            <img class="slide_img" src="../assets/img/slide_2.jpg" v-if="index == 1"/>
-            <img class="slide_img" src="../assets/img/slide_3.jpg" v-if="index == 2"/>
-            <img class="slide_img" src="../assets/img/slide_4.jpg" v-if="index == 3"/>
+            <img class="slide_img" src="../assets/img/slide_1.jpg" v-if="index === 4"/>
+            <img class="slide_img" src="../assets/img/slide_2.jpg" v-if="index === 1"/>
+            <img class="slide_img" src="../assets/img/slide_3.jpg" v-if="index === 2"/>
+            <img class="slide_img" src="../assets/img/slide_4.jpg" v-if="index === 3"/>
           </el-carousel-item>
         </el-carousel>
       </div>

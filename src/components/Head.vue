@@ -5,21 +5,90 @@
       <span class="head_logo_span"> Haha商场</span>
     </div>
     <div class="head_area head_meanu">
-      <span>首页</span>
+      <router-link v-bind:to = "'/'">
+        <span>首页</span>
+      </router-link>
       <span>热销</span>
       <span>好评</span>
     </div>
     <div class="head_area head_meta">
-      <span>登录</span>
-      <span>注册</span>
-      <span>反馈</span>
+      <div v-if="current_user === null">
+        <router-link v-bind:to = "'/user/login'">
+          <span>登录</span>
+        </router-link>
+        <router-link v-bind:to = "'/user/regist'">
+          <span>注册</span>
+        </router-link>
+      </div>
+      <div v-else>
+        <el-dropdown>
+          <span class="el-dropdown-link" style="font-size: 17px">
+            {{ current_user.un }}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>
+              <router-link v-bind:to = "'/usercenter/datum'">
+                个人资料
+              </router-link>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <router-link v-bind:to = "'/usercenter/order'">
+                订单列表
+              </router-link>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <router-link v-bind:to = "'/usercenter/msg'">
+                消息
+              </router-link>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <span @click="show_msg()" class="user_exit">退出登录</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import store  from '@/store'
+  import conf from  '@/assets/conf/conf.js'
   export default {
     name: 'Head',
+    data: function(){
+      return {
+        current_user: null,
+        token_key: conf.token_key
+      }
+    },
+    store,
+    methods: {
+      show_msg: function(){
+        let _self = this;
+        _self.$confirm("确定要退出登录？", '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // 退出登录，清除cookie ， 刷新页面
+          _self.$cookies.remove(_self.token_key);
+          _self.$router.push('/');
+          _self.current_user = null;
+        }).catch(() => {
+          _self.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      }
+    },
+    mounted: function () {
+      let _self = this;
+      if(!_self.$cookies.isKey(_self.token_key)){
+        return false;
+      }
+      // 有合法的cookie
+      _self.current_user = _self.$cookies.get(_self.token_key);
+    }
   }
 </script>
 <style scoped>
@@ -62,5 +131,18 @@
   .head_logo_span{
     margin-left: 1em;
     font-style: oblique;
+  }
+  .el-dropdown-link {
+    cursor: pointer;
+    color: #409EFF;
+  }
+  .el-icon-arrow-down {
+    font-size: 18px;
+  }
+  .user_exit{
+    font-size: 16px;
+  }
+  .user_exit:hover{
+    color: red;
   }
 </style>

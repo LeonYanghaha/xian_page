@@ -31,6 +31,7 @@
     watch:{
     },
     mounted: function () {
+      // TODO  2019/3/25 5:54 PM  这里的参数是写死的，后面改吧
       let _self = this;
       axios.get(_self.url + _self.item.url).then(function (res) {
         if (res.status !== 200 || res.data.status !==200 ) {
@@ -55,7 +56,7 @@
     margin: 0.2em 0.4em;
     display: inline-block;
     box-shadow: 2px 2px 5px gainsboro;
-    border: 1px solid grey;
+    border: 1px solid #f3f3f3;
     text-align: center;
   }
   .sign_product_main:hover{
