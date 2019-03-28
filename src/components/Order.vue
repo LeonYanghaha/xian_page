@@ -15,6 +15,9 @@
         <el-button v-if="item.status==10 || item.status==20" type="primary" size="small"  @click="pay(item.oid)" plain>
           去付款
         </el-button>
+        <el-button v-if="item.status==10 || item.status==20" type="primary" size="small"  @click="cancel(item.oid)" plain>
+          取消订单
+        </el-button>
         <br/>
         总价格：{{item.totalPrice}}<br/>
         下单时间：{{item.submitTime}}<br/>
@@ -31,6 +34,32 @@
 <script>
 import conf from '../assets/conf/conf.js'
 import axios from 'axios'
+import qs from 'qs'
+
+let commentFun = function (data, token, url,cb) {
+  axios({
+    headers: {
+      'deviceCode': 'A95ZEF1-47B5-AC90BF3',
+      'token': token
+    },
+    method: 'post',
+    url: url,
+    data: qs.stringify(data)
+  }).then(function(res) {
+    if (res.status !== 200) {
+      alert("发生异常");
+      return cb(null)
+    }
+    let data = res.data;
+    if (data.msg !== 'OK' && data.status !== 200) {
+      alert("失败");
+      return cb(null)
+    }
+    //成功后，修改当前页面中的数据
+    cb(data.data)
+  });
+};
+
 export default {
   name: "Order",
   data: function () {
@@ -39,15 +68,68 @@ export default {
       token_key: conf.token_key,
       order_list: null,
       url: conf.host,
-      http_token_head: conf.http_token_head,
+      http_token_head: conf.http_token_head
     }
   },
   methods: {
+    cancel: function (oid) {
+      let _self = this;
+      commentFun(
+        {oid: oid},
+        _self.current_user.phone,
+        _self.url + "/order/cancelOrder",
+        function (data) {
+          if (data===null) {
+            return false;
+          }
+          for (let i = 0; i<_self.order_list.length; i++) {
+            if (oid !== _self.order_list[i].oid) {
+              continue
+            }
+            _self.order_list[i].status = 80
+          }
+        }
+      )
+    },
     recived: function (oid) {
-      alert(oid)
+      let _self = this;
+      commentFun(
+        {oid: oid},
+        _self.current_user.phone,
+        _self.url + "/order/recivedOrder",
+        function (data) {
+          if (data===null) {
+            return false;
+          }
+          for (let i = 0; i < _self.order_list.length; i++) {
+            if (oid !== _self.order_list[i].oid) {
+              continue
+            }
+            _self.order_list[i].status = 60
+            _self.order_list[i].ReceivedTime = new Date().toDateString()
+          }
+        }
+      )
     },
     pay: function (oid) {
-      alert('pay-'+oid)
+      let _self = this;
+      commentFun(
+        {oid: oid},
+        _self.current_user.phone,
+        _self.url + "/order/payOrder",
+        function (data) {
+          if (data === null) {
+            return false;
+          }
+          for (let i = 0; i<_self.order_list.length; i++) {
+            if (oid !== _self.order_list[i].oid) {
+              continue
+            }
+            _self.order_list[i].status = 30
+            _self.order_list[i].payTime = new Date().toDateString()
+          }
+        }
+      )
     }
   },
   created: function () {
@@ -66,26 +148,25 @@ export default {
         'token': _self.current_user.phone
       },
       method: 'post',
-      url: _self.url + '/order/getOrderList',
-    }).then(function(res) {
-      if(res.status !== 200){
+      url: _self.url + '/order/getOrderList'
+    }).then(function (res) {
+      if (res.status !== 200) {
         alert('发生异常')
         return false
       }
       let data = res.data
-      if(data.msg!=='OK' && data.status !==200){
+      if (data.msg !== 'OK' && data.status !== 200) {
         alert('获取失败')
         return false
       }
-      if(!res.data.data || res.data.data==null){
+      if (!res.data.data || res.data.data == null) {
         return false
       }
-      console.log(res.data.data)
       // 获取成功
       // <!--//    status 状态  10  已提交   20 未付款  30 已付款  40 待发货   50 已发货，待收货-->
       // <!--//                 60 收货，交易成功  70 超时未付款，关闭  80 用户主动关闭-->
-      for (let i=0; i < res.data.data.length; i++) {
-        if(!res.data.data[i].status){
+      for (let i = 0; i < res.data.data.length; i++) {
+        if (!res.data.data[i].status) {
           continue
         }
         let status = res.data.data[i].status
