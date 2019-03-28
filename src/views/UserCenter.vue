@@ -15,6 +15,10 @@
                 <i class="el-icon-tickets"></i>
                 <span slot="title">订单列表</span>
               </el-menu-item>
+              <el-menu-item index="car">
+                <i class="el-icon-goods"></i>
+                <span slot="title">购物车</span>
+              </el-menu-item>
               <el-menu-item index="msg">
                 <i class="el-icon-message"></i>
                 <span slot="title">消息中心</span>
@@ -33,6 +37,9 @@
         <div v-else-if="tag == 'order'">
           <Order></Order>
         </div>
+        <div v-else-if="tag == 'car'">
+          <Car></Car>
+        </div>
       </div>
     </div>
     <Foot></Foot>
@@ -45,12 +52,13 @@ import Foot from '@/components/Foot.vue'
 import Datum from '@/components/Datum.vue'
 import Msg from '@/components/Msg.vue'
 import Order from '@/components/Order.vue'
+import Car from '@/components/Car.vue'
 import conf from '../assets/conf/conf.js'
 export default {
   name: "UserCenter",
   props: ['tag'],
   components: {
-    Head, Foot, Msg, Order, Datum
+    Head, Foot, Msg, Order, Datum, Car
   },
   data:function () {
     return {

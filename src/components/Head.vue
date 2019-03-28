@@ -37,6 +37,11 @@
               </router-link>
             </el-dropdown-item>
             <el-dropdown-item>
+              <router-link v-bind:to = "'/usercenter/car'">
+                购物车
+              </router-link>
+            </el-dropdown-item>
+            <el-dropdown-item>
               <router-link v-bind:to = "'/usercenter/msg'">
                 消息
               </router-link>
