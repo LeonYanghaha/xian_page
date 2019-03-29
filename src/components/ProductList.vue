@@ -1,7 +1,7 @@
 <template>
   <div class="list_main">
     <div>{{item.name}}</div>
-    <div v-for="item of list_data" class="sign_product_main">
+    <div v-for="(index,item) of list_data" v-bind:key="index" class="sign_product_main">
       <router-link v-bind:to="'/product/'+item.pid"  v-bind:pid="item.pid" target="_blank">
         <img class="product_main_img" v-bind:src='img_host + item.productImgList[0].name'/>
       </router-link>
@@ -16,31 +16,31 @@
 </template>
 
 <script>
-  import conf from '../assets/conf/conf.js'
-  import axios from 'axios'
-  export default {
-    name: 'ProductList',
-    props: ['item'],
-    data: function(){
-      return {
-        url: conf.host,
-        img_host: conf.img_host,
-        list_data: null
-      }
-    },
-    watch:{
-    },
-    mounted: function () {
-      // TODO  2019/3/25 5:54 PM  这里的参数是写死的，后面改吧
-      let _self = this;
-      axios.get(_self.url + _self.item.url).then(function (res) {
-        if (res.status !== 200 || res.data.status !==200 ) {
-          return false
-        }
-        _self.list_data = res.data.data;
-      });
+import conf from '../assets/conf/conf.js'
+import axios from 'axios'
+export default {
+  name: 'ProductList',
+  props: ['item'],
+  data: function () {
+    return {
+      url: conf.host,
+      img_host: conf.img_host,
+      list_data: null
     }
+  },
+  watch: {
+  },
+  mounted: function () {
+    // TODO  2019/3/25 5:54 PM  这里的参数是写死的，后面改吧
+    let _self = this
+    axios.get(_self.url + _self.item.url).then(function (res) {
+      if (res.status !== 200 || res.data.status !== 200) {
+        return false
+      }
+      _self.list_data = res.data.data
+    })
   }
+}
 </script>
 
 <style scoped>

@@ -55,46 +55,46 @@
 </template>
 
 <script>
-  import store  from '@/store'
-  import conf from  '@/assets/conf/conf.js'
-  export default {
-    name: 'Head',
-    data: function(){
-      return {
-        current_user: null,
-        token_key: conf.token_key
-      }
-    },
-    store,
-    methods: {
-      show_msg: function(){
-        let _self = this;
-        _self.$confirm("确定要退出登录？", '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          // 退出登录，清除cookie ， 刷新页面
-          _self.$cookies.remove(_self.token_key);
-          _self.$router.push('/');
-          _self.current_user = null;
-        }).catch(() => {
-          _self.$message({
-            type: 'info',
-            message: '已取消'
-          });
-        });
-      }
-    },
-    mounted: function () {
-      let _self = this;
-      if(!_self.$cookies.isKey(_self.token_key)){
-        return false;
-      }
-      // 有合法的cookie
-      _self.current_user = _self.$cookies.get(_self.token_key);
+import store from '@/store'
+import conf from '@/assets/conf/conf.js'
+export default {
+  name: 'Head',
+  data: function () {
+    return {
+      current_user: null,
+      token_key: conf.token_key
     }
+  },
+  store,
+  methods: {
+    show_msg: function () {
+      let _self = this
+      _self.$confirm('确定要退出登录？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 退出登录，清除cookie ， 刷新页面
+        _self.$cookies.remove(_self.token_key)
+        _self.$router.push('/')
+        _self.current_user = null
+      }).catch(() => {
+        _self.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    }
+  },
+  mounted: function () {
+    let _self = this
+    if (!_self.$cookies.isKey(_self.token_key)) {
+      return false
+    }
+    // 有合法的cookie
+    _self.current_user = _self.$cookies.get(_self.token_key)
   }
+}
 </script>
 <style scoped>
   .head_main{

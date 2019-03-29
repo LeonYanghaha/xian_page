@@ -55,12 +55,12 @@ import Order from '@/components/Order.vue'
 import Car from '@/components/Car.vue'
 import conf from '../assets/conf/conf.js'
 export default {
-  name: "UserCenter",
+  name: 'UserCenter',
   props: ['tag'],
   components: {
     Head, Foot, Msg, Order, Datum, Car
   },
-  data:function () {
+  data: function () {
     return {
       current_user: null,
       token_key: conf.token_key
@@ -71,10 +71,10 @@ export default {
       this.$router.push('/usercenter/' + key)
     }
   },
-  mounted:function () {
+  mounted: function () {
     // 检查当前是否有用户登录，如果没有，就直接跳转到首页
-    let _self = this;
-    if(!_self.$cookies.isKey (_self.token_key)) {
+    let _self = this
+    if (!_self.$cookies.isKey(_self.token_key)) {
       return _self.$router.push('/')
     }
     // 往下走，就是目前有合法登录用户的情况

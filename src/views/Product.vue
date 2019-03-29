@@ -1,7 +1,26 @@
 <template>
   <div id="main">
     <Head></Head>
-    <div class="product_main">
+    <div class="order_submit_after" v-if="oid !== 0">
+      <el-card class="box-card">
+        <span class="info_title"><i class="el-icon-success"></i>订单已提交成功</span>
+        <span class="info_line"><div class="info_column_name">ID:</div>{{current_order.oid}}</span>
+        <span class="info_line"><div class="info_column_name">订单名:</div>{{current_order.name}}</span>
+        <span class="info_line"><div class="info_column_name">收货地址:</div>{{current_order.aadderss}}</span>
+        <span class="info_line"><div class="info_column_name">下单时间:</div>{{current_order.submitTime}}</span>
+        <span class="info_line"><div class="info_column_name">订单状态:</div>{{current_order.status}}</span>
+        <span class="info_line"><div class="info_column_name">订单总价格:</div>{{current_order.totalPrice}}</span>
+        <span class="info_line"><div class="info_column_name">订单详情:</div>{{current_order.orderDetial.pname}}--
+            {{current_order.orderDetial.number}}--{{current_order.orderDetial.price}}
+        </span>
+        <div class="info_btn">
+          <el-button type="primary" plain>去付款</el-button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <el-button type="danger" plain>取消订单</el-button>
+        </div>
+      </el-card>
+    </div>
+    <div class="product_main" v-if="oid===0">
       <div class="product_head">
         <div class="product_img">
           <img class="product_main_img" v-bind:src="img_host + current_product.productImgList[0].name">
@@ -26,8 +45,12 @@
           <span>
             留言：<el-input v-model="order_meta" placeholder="请输入内容"></el-input>
           </span>
-          <el-button type="primary" @click="add_car" plain>加入购物车</el-button>
-          <el-button type="primary" @click="submit_order" plain>提交订单</el-button>
+          <el-button type="primary" @click="add_car" v-bind:disabled="car_btn_is_disable" plain>
+            加入购物车
+          </el-button>
+          <el-button type="primary" @click="submit_order" v-bind:disabled="submit_btn_is_disable" plain>
+            提交订单
+          </el-button>
         </div>
       </div>
       <div class="product_info">
@@ -52,37 +75,13 @@ import Head from '@/components/Head.vue'
 import Foot from '@/components/Foot.vue'
 import conf from '../assets/conf/conf.js'
 import axios from 'axios'
-import qs from 'qs'
-const common = function (data, token, url, cb) {
-  axios({
-    headers: {
-      'deviceCode': 'A95ZEF1-47B5-AC90BF3',
-      'token': token
-    },
-    method: 'post',
-    url: url,
-    data: qs.stringify(data)
-  }).then(function(res) {
-    if (res.status !== 200) {
-      alert("发生异常");
-      return cb(null)
-    }
-    let data = res.data;
-    if (data.msg !== 'OK' && data.status !== 200) {
-      alert("失败");
-      return cb(null)
-    }
-    //成功
-    cb(data.data)
-  });
-};
 export default {
-  name: "Product",
+  name: 'Product',
   props: ['pid'],
   components: {
     Head, Foot
   },
-  data: function() {
+  data: function () {
     return {
       url: conf.host,
       img_host: conf.img_host,
@@ -91,9 +90,13 @@ export default {
       sign_price: 0,
       total_price: 0,
       address_list: [],
-      label_info: "选择收货地址",
+      label_info: '选择收货地址', // 地址id
       token_key: conf.token_key,
-      order_meta: null
+      order_meta: null,
+      submit_btn_is_disable: false,
+      car_btn_is_disable: false,
+      oid: 0,
+      current_order: null
     }
   },
   methods: {
@@ -109,8 +112,20 @@ export default {
           showClose: true,
           message: '当前尚未登录！',
           type: 'error'
-        });
+        })
       }
+      // 在向后台发送请求之前，禁用按钮
+      _self.car_btn_is_disable = true
+      let data = {
+        pid: _self.pid
+      }
+      _self.$tool.http_tool(data, _self.current_user.phone, _self.url + '/car/addItemToCar',
+        function (data) {
+          _self.$message({
+            message: '添加成功',
+            type: 'success'
+          })
+        })
     },
     submit_order: function () {
       let _self = this
@@ -120,8 +135,27 @@ export default {
           showClose: true,
           message: '当前尚未登录！',
           type: 'error'
-        });
+        })
       }
+      // 检查完用户登录，需要检查当前是否有地址
+      // r如果没有地址，则应该先添加地址
+      if (_self.address_list.length <= 0) {
+        return _self.$message({
+          showClose: true,
+          message: '当前没有收货地址！',
+          type: 'error'
+        })
+      }
+      // 判断用户是否选择了合法的地址
+      if (typeof _self.label_info !== 'number') {
+        return _self.$message({
+          showClose: true,
+          message: '请选择收货地址！',
+          type: 'error'
+        })
+      }
+      // 在向后台发送请求之前，禁用按钮
+      _self.submit_btn_is_disable = true
       let data = {
         aid: _self.label_info,
         name: _self.current_product.name + '---' + _self.number + '*' + _self.current_product.price,
@@ -130,53 +164,54 @@ export default {
         number: _self.number,
         total_price: _self.total_price
       }
-      common(
-        data, _self.current_user.phone, _self.url + "/order/submitOrder",
+      _self.$tool.http_tool(data, _self.current_user.phone, _self.url + '/order/submitOrder',
         function (data) {
-          console.log(data)
-        }
-      )
+          // 这里是订单提交成功之后的情况
+          // 根oid 获取订单详情并展示到页面
+          _self.oid = data
+          _self.$tool.http_tool({ oid: data }, _self.current_user.phone, _self.url + '/order/getOrderById',
+            function (data) {
+              _self.current_order = _self.$tool.format_order_status(data)
+            })
+        })
     }
   },
   beforeMount: function () {
-    let _self = this;
+    let _self = this
     // 获取商品
-    axios.get(_self.url + "/product/findById/" + _self.pid).then(function (res) {
-      if (res.status !== 200 || res.data.status !==200 ) {
+    axios.get(_self.url + '/product/findById/' + _self.pid).then(function (res) {
+      if (res.status !== 200 || res.data.status !== 200) {
         return false
       }
-      _self.current_product = res.data.data;
-      _self.sign_price = _self.current_product.price;
-      _self.total_price = _self.current_product.price;
-    });
+      _self.current_product = res.data.data
+      _self.sign_price = _self.current_product.price
+      _self.total_price = _self.current_product.price
+    })
     // 获取当前用户的收货地址
     // 如果没有登录，就给出提示信息
-    if (!_self.$cookies.isKey (_self.token_key)) {
+    if (!_self.$cookies.isKey(_self.token_key)) {
       _self.$message({
         message: '当前还没有登录.',
         type: 'warning'
-      });
-      return;
+      })
+      return
     }
     // 往下走，就是目前有合法登录用户的情况
     // 获取当前用户的合法信息之后，去获取地址列表
     _self.current_user = _self.$cookies.get(_self.token_key)
-    common(
+    _self.$tool.http_tool(
       {},
       _self.current_user.phone,
       _self.url + '/address/getAddressList',
       function (data) {
         if (data === null) {
-           return;
+          return
         }
-        for (let i = 0; i<data.length; i++) {
-          let temp_address_list = {
-            value: null,
-            label: null
-          };
-          temp_address_list.value = data[i].aid
-          temp_address_list.label = data[i].aadderss
-          _self.address_list.push(temp_address_list)
+        for (let i = 0; i < data.length; i++) {
+          _self.address_list.push({
+            value: data[i].aid,
+            label: data[i].aadderss
+          })
         }
       }
     )
@@ -216,5 +251,33 @@ export default {
   width: 69%;
   margin: auto;
   border: 2px solid green;
+}
+.order_submit_after{
+  width: 69%;
+  margin: auto;
+}
+.info_line{
+  display: block;
+  width: 100%;
+}
+.info_column_name{
+  display: inline-block;
+  /*border: 1px solid green;*/
+  width: 20em;
+  text-align: right;
+  padding-right: 1em;
+  margin-top: 1em;
+}
+.info_title{
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  margin: 1em auto;
+}
+.info_btn{
+  /*display: inline-block;*/
+  width: 100%;
+  text-align: center;
+  padding-top: 1.5em;
 }
 </style>
