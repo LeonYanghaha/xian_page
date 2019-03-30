@@ -1,9 +1,9 @@
 <template>
   <div class="list_main">
     <div>{{item.name}}</div>
-    <div v-for="(index,item) of list_data" v-bind:key="index" class="sign_product_main">
+    <div v-for="(item, index) in list_data" v-bind:key="index" class="sign_product_main">
       <router-link v-bind:to="'/product/'+item.pid"  v-bind:pid="item.pid" target="_blank">
-        <img class="product_main_img" v-bind:src='img_host + item.productImgList[0].name'/>
+        <img class="product_main_img" v-bind:src='item.img'/>
       </router-link>
       <span class="product_name">
         {{item.name}}
@@ -18,6 +18,7 @@
 <script>
 import conf from '../assets/conf/conf.js'
 import axios from 'axios'
+
 export default {
   name: 'ProductList',
   props: ['item'],
@@ -25,7 +26,7 @@ export default {
     return {
       url: conf.host,
       img_host: conf.img_host,
-      list_data: null
+      list_data: []
     }
   },
   watch: {
@@ -37,7 +38,19 @@ export default {
       if (res.status !== 200 || res.data.status !== 200) {
         return false
       }
-      _self.list_data = res.data.data
+      if (res.data.data.length <= 0) {
+        // TODO  2019/3/30 9:54 AM 后端没有返回数据的情况 应该有提示
+        return false
+      }
+      for (let i = 0; i < res.data.data.length; i++) {
+        let signItem = res.data.data[i]
+        _self.list_data.push({
+          'name': res.data.data[i].name,
+          'pid': signItem.pid,
+          'price': signItem.price,
+          'img': _self.img_host + signItem.productImgList[0].name
+        })
+      }
     })
   }
 }

@@ -177,7 +177,16 @@ export default {
     }
   },
   beforeMount: function () {
+    // 在进入这里之前，应该先检查传入的ID是否合法。
     let _self = this
+    if (isNaN(_self.pid)) {
+      _self.$message({
+        showClose: true,
+        message: '商品ID错误❌',
+        type: 'error'
+      })
+      return false
+    }
     // 获取商品
     axios.get(_self.url + '/product/findById/' + _self.pid).then(function (res) {
       if (res.status !== 200 || res.data.status !== 200) {
@@ -205,7 +214,8 @@ export default {
       _self.url + '/address/getAddressList',
       function (data) {
         if (data === null) {
-          return
+          // TODO  2019/3/30 9:32 AM  如果没有查到对应的商品，这里应该有个友好的提示
+          return false
         }
         for (let i = 0; i < data.length; i++) {
           _self.address_list.push({
