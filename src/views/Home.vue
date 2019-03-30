@@ -18,7 +18,7 @@
     </div>
     <div class="home_product_list">
       <div class="home_product_type_list">
-        <ProductList v-for="item  in show_unit" v-bind:item="item">
+        <ProductList v-for="(item,index)  in show_unit" v-bind:key="index" v-bind:item="item">
         </ProductList>
       </div>
     </div>
@@ -37,34 +37,38 @@ export default {
   components: {
     Head, Foot, ProductList, MeanuMain
   },
-  data: function(){
+  data: function () {
     return {
-      show_unit:{
+      show_unit: {
         'food': {
-          name:'食物',
-          url:'/product/findAll',
-          start:0,
-          pageSize:8
-        },'clothes': {
-          name:'衣服',
-          url:'/product/findAll',
-          start:0,
-          pageSize:8
-        },'electron': {
-          name:'电器',
-          url:'/product/findAll',
-          start:0,
-          pageSize:8
-        },'hot_sell': {
-          name:'热销',
-          url:'/product/findAll',
-          start:0,
-          pageSize:8
-        },'cheap_sell': {
-          name:'特价',
-          url:'/product/findAll',
-          start:0,
-          pageSize:8
+          name: '食物',
+          url: '/product/findAll',
+          currentPage: 0,
+          pageShowNumber: 4
+        },
+        'clothes': {
+          name: '衣服',
+          url: '/product/findAll',
+          currentPage: 0,
+          pageShowNumber: 4
+        },
+        'electron': {
+          name: '电器',
+          url: '/product/findAll',
+          currentPage: 0,
+          pageShowNumber: 4
+        },
+        'hot_sell': {
+          name: '热销',
+          url: '/product/findAll',
+          currentPage: 0,
+          pageShowNumber: 8
+        },
+        'cheap_sell': {
+          name: '特价',
+          url: '/product/findAll',
+          currentPage: 0,
+          pageShowNumber: 8
         }
       }
     }

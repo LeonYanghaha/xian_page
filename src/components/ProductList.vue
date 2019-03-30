@@ -17,7 +17,6 @@
 
 <script>
 import conf from '../assets/conf/conf.js'
-import axios from 'axios'
 
 export default {
   name: 'ProductList',
@@ -32,26 +31,25 @@ export default {
   watch: {
   },
   mounted: function () {
-    // TODO  2019/3/25 5:54 PM  这里的参数是写死的，后面改吧
     let _self = this
-    axios.get(_self.url + _self.item.url).then(function (res) {
-      if (res.status !== 200 || res.data.status !== 200) {
-        return false
+    _self.$tool.http_tool(
+      { pageShowNumber: _self.item.pageShowNumber, currentPage: _self.item.currentPage }, null, _self.url + _self.item.url,
+      function (data) {
+        if (data.data.length <= 0) {
+          // TODO  2019/3/30 9:54 AM 后端没有返回数据的情况 应该有提示
+          return false
+        }
+        for (let i = 0; i < data.data.length; i++) {
+          let signItem = data.data[i]
+          _self.list_data.push({
+            'name': data.data[i].name,
+            'pid': signItem.pid,
+            'price': signItem.price,
+            'img': _self.img_host + signItem.productImgList[0].name
+          })
+        }
       }
-      if (res.data.data.length <= 0) {
-        // TODO  2019/3/30 9:54 AM 后端没有返回数据的情况 应该有提示
-        return false
-      }
-      for (let i = 0; i < res.data.data.length; i++) {
-        let signItem = res.data.data[i]
-        _self.list_data.push({
-          'name': res.data.data[i].name,
-          'pid': signItem.pid,
-          'price': signItem.price,
-          'img': _self.img_host + signItem.productImgList[0].name
-        })
-      }
-    })
+    )
   }
 }
 </script>
