@@ -21,99 +21,99 @@
 </template>
 
 <script>
-  import Head from '@/components/Head.vue';
-  import Foot from "@/components/Foot";
-  import conf from '../assets/conf/conf.js';
-  import axios from 'axios';
-  import qs from 'qs';
-  export default {
-    name: "User",
-    components: {Foot, Head},
-    component: {
-      Head, Foot
-    },
-    props: ['active'],
-    data: function () {
-      return {
-        un: 'yang',
-        pw: '123',
-        repw: '',
-        url: conf.host,
-        token_key: conf.token_key
+import Head from '@/components/Head.vue'
+import Foot from '@/components/Foot'
+import conf from '../assets/conf/conf.js'
+import axios from 'axios'
+import qs from 'qs'
+export default {
+  name: 'User',
+  components: { Foot, Head },
+  component: {
+    Head, Foot
+  },
+  props: ['active'],
+  data: function () {
+    return {
+      un: 'yang',
+      pw: '123',
+      repw: '',
+      url: conf.host,
+      token_key: conf.token_key
+    }
+  },
+  methods: {
+    login: function () {
+      let _self = this
+      if (!_self.un || !_self.pw) {
+        alert('用户名，密码不能为空')
+        return false
       }
+      let data = {
+        'un': _self.un,
+        'pw': _self.pw
+      }
+      axios({
+        headers: {
+          'deviceCode': 'A95ZEF1-47B5-AC90BF3'
+        },
+        method: 'post',
+        url: _self.url + '/user/login',
+        data: qs.stringify(data)
+      }).then(function (res) {
+        if (res.status !== 200) {
+          alert('发生异常')
+          return false
+        }
+        let data = res.data
+        if (data.msg !== 'OK' && data.status !== 200) {
+          alert('登录失败')
+          return false
+        }
+        // 登录成功，将jwt 结果存储
+        _self.$cookies.set(_self.token_key, data.data, '30MIN')
+        // 登录成功后，跳转到首页
+        _self.$router.push('/')
+      })
     },
-    methods: {
-      login: function () {
-        let _self = this;
-        if(!_self.un || !_self.pw){
-          alert("用户名，密码不能为空");
-          return false;
-        }
-        let data = {
-          "un": _self.un,
-          "pw": _self.pw
-        };
-        axios({
-          headers: {
-            'deviceCode': 'A95ZEF1-47B5-AC90BF3'
-          },
-          method: 'post',
-          url: _self.url + "/user/login",
-          data: qs.stringify(data)
-        }).then(function(res) {
-          if(res.status !== 200){
-            alert("发生异常");
-            return false
-          }
-          let data = res.data;
-          if(data.msg!=='OK' && data.status !==200){
-            alert("登录失败");
-            return false
-          }
-          // 登录成功，将jwt 结果存储
-          _self.$cookies.set(_self.token_key, data.data, "30MIN");
-          // 登录成功后，跳转到首页
-          _self.$router.push('/');
-        });
-      },
-      regist: function () {
-        let _self = this;
-        if(!_self.un || !_self.pw  || !_self.repw){
-          alert("用户名，密码不能为空");
-          return false;
-        }
-        if(_self.pw !== _self.repw){
-          alert("两次输入的密码不一致");
-          return false;
-        }
+    regist: function () {
+      let _self = this
+      if (!_self.un || !_self.pw || !_self.repw) {
+        alert('用户名，密码不能为空')
+        return false
+      }
+      if (_self.pw !== _self.repw) {
+        alert('两次输入的密码不一致')
+        return false
+      }
 
-        let data = {
-          "un": _self.un,
-          "pw": _self.pw,
-          "repw": _self.repw
-        };
-        axios({
-          headers: {
-            'deviceCode': 'A95ZEF1-47B5-AC90BF3'
-          },
-          method: 'post',
-          url: _self.url + "/user/register",
-          data: qs.stringify(data)
-        }).then(function(res) {
-          if(res.status!==200){
-            alert("发生异常");
-            return false
-          }
-          let data = res.data;
-          if(data.msg!=='OK' && data.status !==200){
-            alert("登录失败" + data.msg);
-            return false
-          }
-          alert("注册成功")
-        });
+      let data = {
+        'un': _self.un,
+        'pw': _self.pw,
+        'repw': _self.repw
       }
+      axios({
+        headers: {
+          'deviceCode': 'A95ZEF1-47B5-AC90BF3'
+        },
+        method: 'post',
+        url: _self.url + '/user/register',
+        data: qs.stringify(data)
+      }).then(function (res) {
+        if (res.status !== 200) {
+          alert('发生异常')
+          return false
+        }
+        let data = res.data
+        if (data.msg !== 'OK' && data.status !== 200) {
+          alert('登录失败' + data.msg)
+          return false
+        }
+        alert('注册成功')
+      })
     }
   }
+}
 </script>
 
 <style scoped>

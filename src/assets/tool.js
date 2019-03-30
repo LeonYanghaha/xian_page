@@ -2,6 +2,25 @@ const axios = require('axios')
 const qs = require('qs')
 
 export default {
+
+  show_success_msg: function (self, value) {
+    self.$message({
+      message: value,
+      type: 'success'
+    })
+  },
+  show_error_msg: function (self, value) {
+    self.$message({
+      message: value,
+      type: 'error'
+    })
+  },
+  show_warning_msg: function (self, value) {
+    self.$message({
+      message: value,
+      type: 'warning'
+    })
+  },
   http_tool: function (data, token, url, cb) {
     axios({
       headers: {
