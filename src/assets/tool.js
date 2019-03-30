@@ -2,7 +2,35 @@ const axios = require('axios')
 const qs = require('qs')
 
 export default {
-
+  pay_order: function (self, oid, cb) {
+    self.$tool.http_tool(
+      { oid: oid },
+      self.current_user.phone,
+      self.url + '/order/payOrder',
+      function (data) {
+        let temp = false
+        if (data === null) {
+          temp = false
+        } else {
+          temp = true
+        }
+        cb(temp)
+      }
+    )
+  },
+  cancel_order: function (self, oid) {
+    self.$tool.http_tool(
+      { oid: oid },
+      self.current_user.phone,
+      self.url + '/order/cancelOrder',
+      function (data) {
+        if (data === null) {
+          return false
+        }
+        return true
+      }
+    )
+  },
   show_success_msg: function (self, value) {
     self.$message({
       message: value,

@@ -9,16 +9,22 @@
         <span class="info_line"><div class="info_column_name">ID:</div>{{current_order.oid}}</span>
         <span class="info_line"><div class="info_column_name">订单名:</div>{{current_order.name}}</span>
         <span class="info_line"><div class="info_column_name">收货地址:</div>{{current_order.aadderss}}</span>
+        <span class="info_line"><div class="info_column_name">收件人:</div>{{current_order.aname}}</span>
+        <span class="info_line"><div class="info_column_name">收货电话号码:</div>{{current_order.aphone}}</span>
         <span class="info_line"><div class="info_column_name">下单时间:</div>{{current_order.submitTime}}</span>
         <span class="info_line"><div class="info_column_name">订单状态:</div>{{current_order.msg}}</span>
         <span class="info_line"><div class="info_column_name">订单总价格:</div>{{current_order.totalPrice}}</span>
-        <span class="info_line"><div class="info_column_name">订单详情:</div>{{current_order.orderDetial.pname}}--
-            {{current_order.orderDetial.number}}--{{current_order.orderDetial.price}}
+        <span class="info_line"><div class="info_column_name">订单详情:</div>
+          <span class="order_detial" v-for="(item,index) in current_order.orderDetial" v-bind:key="index">
+            商品名：{{item.pname}}<br/>
+            数量：{{item.number}}<br/>
+            单价：{{item.price}}<br/>
+          </span>
         </span>
         <div class="info_btn">
-          <el-button type="primary" plain>去付款</el-button>
+          <el-button type="primary" @click="pay_order" plain>去付款</el-button>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <el-button type="danger" plain>取消订单</el-button>
+          <el-button type="danger" @click="cancel_order" plain>取消订单</el-button>
         </div>
       </el-card>
     </div>
@@ -114,6 +120,19 @@ export default {
     }
   },
   methods: {
+    pay_order: function () {
+      let _self = this
+      let oid = _self.current_order.oid
+      _self.$tool.pay_order(_self, oid, function (data) {
+        if (data) {
+          _self.$tool.show_success_msg(_self, '支付成功')
+          // 跳转到订单页面
+          _self.$router.push('/usercenter/order')
+        } else {
+          _self.$tool.show_error_msg(_self, '支付失败，请重新支付')
+        }
+      })
+    },
     check_user: function () {
       // 当用户点击地址选择按钮的时候，应该首先检查是否有用户登录
       let _self = this
@@ -175,6 +194,7 @@ export default {
           _self.$tool.http_tool({ oid: data }, _self.current_user.phone, _self.url + '/order/getOrderById',
             function (data) {
               _self.current_order = _self.$tool.format_order_status(data)
+              console.log(_self.current_order)
             })
         })
     }
@@ -280,7 +300,8 @@ export default {
 }
 .info_btn{
   width: 100%;
-  text-align: center;
+  text-align: left;
+  margin-left: 20em;
   padding-top: 1.5em;
 }
 .meta_column_name{
@@ -324,5 +345,12 @@ export default {
   width: 29em;
   height: 29em;
   margin: 2em 0.5em 0em 0em;
+}
+.order_detial{
+  /*border: 2px solid green;*/
+  width: 35%;
+  float: none;
+  display: inline-block;
+  margin-top: 1em;
 }
 </style>

@@ -5,7 +5,7 @@
     </el-card>
     <el-card>
       <div class="item_order" v-for="(item,index) of order_list" :key="index">
-        <span>{{item.name}}</span>
+        <span>{{item.name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
         <a>查看订单详情</a>
         <br/>
         订单状态：{{item.msg}}
@@ -15,7 +15,7 @@
         <el-button v-if="item.status==10 || item.status==20" type="primary" size="small"  @click="pay(item.oid)" plain>
           去付款
         </el-button>
-        <el-button v-if="item.status==10 || item.status==20" type="warning" size="small"  @click="cancel(item.oid)" plain>
+        <el-button v-if="item.status==10 || item.status==20" type="danger" size="small"  @click="cancel(item.oid)" plain>
           取消订单
         </el-button>
         <br/>
@@ -28,14 +28,36 @@
         <span v-if="item.status>=60 && item.status!=70 && item.status!=80">收货时间：{{item.ReceivedTime}} <br/> </span>
         <hr/>
       </div>
+      <span class="page_span">
+        <el-pagination layout="prev, pager, next" :total="total_page" @current-change="change_page" :page-size="show_page">
+        </el-pagination>
+      </span>
     </el-card>
   </div>
 </template>
 <script>
 import conf from '../assets/conf/conf.js'
-import axios from 'axios'
-// import http_tool from '../assets/http_tool'
-
+let get_order_list = function (data, self) {
+  self.$tool.http_tool(
+    data,
+    self.current_user.phone,
+    self.url + '/order/getOrderList',
+    function (data) {
+      if (data === null) {
+        return self.$tool.show_error_msg(self, '数据获取失败，请稍后再试')
+      }
+      for (let i = 0; i < data.data.length; i++) {
+        if (!data.data[i].status) {
+          continue
+        }
+        data.data[i] = self.$tool.format_order_status(data.data[i])
+      }
+      self.order_list = data.data // 页面数据
+      self.total_page = data.count // 数据总数
+      self.current_page = data.currentPage // 当前页码
+    }
+  )
+}
 export default {
   name: 'Order',
   data: function () {
@@ -44,10 +66,18 @@ export default {
       token_key: conf.token_key,
       order_list: null,
       url: conf.host,
-      http_token_head: conf.http_token_head
+      http_token_head: conf.http_token_head,
+      total_page: 0,
+      show_page: 5,
+      current_page: 1
     }
   },
   methods: {
+    change_page: function (page) {
+      let _self = this
+      this.current_page = page
+      get_order_list({ pageShowNumber: _self.show_page, currentPage: _self.current_page }, _self)
+    },
     cancel: function (oid) {
       let _self = this
       _self.$tool.http_tool(
@@ -118,35 +148,7 @@ export default {
   },
   mounted: function () {
     let _self = this
-    axios({
-      headers: {
-        'deviceCode': 'A95ZEF1-47B5-AC90BF3',
-        'token': _self.current_user.phone
-      },
-      method: 'post',
-      url: _self.url + '/order/getOrderList'
-    }).then(function (res) {
-      if (res.status !== 200) {
-        alert('发生异常')
-        return false
-      }
-      let data = res.data
-      if (data.msg !== 'OK' && data.status !== 200) {
-        alert('获取失败')
-        return false
-      }
-      if (!res.data.data || res.data.data == null) {
-        return false
-      }
-      // 获取成功
-      for (let i = 0; i < res.data.data.length; i++) {
-        if (!res.data.data[i].status) {
-          continue
-        }
-        res.data.data[i] = _self.$tool.format_order_status(res.data.data[i])
-      }
-      _self.order_list = res.data.data
-    })
+    get_order_list({ pageShowNumber: _self.show_page, currentPage: _self.current_page }, _self)
   }
 }
 </script>
@@ -163,5 +165,11 @@ export default {
   color: grey;
   height: 15em;
   padding-top: 2em;
+}
+.page_span{
+  width: 100%;
+  text-align: center;
+  margin-top: 1em;
+  display: inline-block;
 }
 </style>
