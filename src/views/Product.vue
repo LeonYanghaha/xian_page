@@ -120,6 +120,21 @@ export default {
     }
   },
   methods: {
+    cancel_order: function () {
+      let _self = this
+      let oid = _self.current_order.oid
+      _self.$tool.confirm_msg(_self, '确定要取消该订单吗？', '提示', function () {
+        _self.$tool.cancel_order(_self, oid, function (data) {
+          if (!data) {
+            return _self.$tool.show_error_msg(_self, '操作失败')
+          }
+          _self.order_list = _self.$tool.format_order_list_status(_self, _self.order_list)
+          _self.$tool.show_success_msg(_self, '已取消该订单')
+        })
+      }, function () {
+        _self.$tool.show_success_msg(_self, '已取消')
+      })
+    },
     pay_order: function () {
       let _self = this
       let oid = _self.current_order.oid
@@ -245,7 +260,6 @@ export default {
 
 <style scoped>
 #main{
-  /*width: 69%;*/
   margin: auto;
 }
 .product_head{
@@ -253,13 +267,11 @@ export default {
   margin:5em auto 1em auto;
 }
 .product_img{
-  /*border: 1px solid red;*/
   display: table-cell;
   width: 40em;
   height: 22em;
 }
 .product_meta{
-  /*border: 2px solid green;*/
   display: table-cell;
   vertical-align: top;
   width: 60em;
@@ -274,7 +286,6 @@ export default {
 .product_info{
   width: 69%;
   margin: auto;
-  /*border: 2px solid green;*/
 }
 .order_submit_after{
   width: 69%;
@@ -286,7 +297,6 @@ export default {
 }
 .info_column_name{
   display: inline-block;
-  /*border: 1px solid green;*/
   width: 20em;
   text-align: right;
   padding-right: 1em;
@@ -324,13 +334,10 @@ export default {
   width: 15em;
   text-align: right;
   margin-top: 1em;
-  /*border: 2px solid red;*/
 }
 .product_create_info{
   width: 45em;
   float: right;
-  /*display: inline;*/
-  /*border: 2px solid green;*/
   padding-top: 1em;
   position: relative;
 }
@@ -339,7 +346,6 @@ export default {
   margin: auto;
   text-align: center;
   padding-top: 2em;
-  /*border: 2px solid gold;*/
 }
 .info_list_img img{
   width: 29em;
@@ -347,7 +353,6 @@ export default {
   margin: 2em 0.5em 0em 0em;
 }
 .order_detial{
-  /*border: 2px solid green;*/
   width: 35%;
   float: none;
   display: inline-block;

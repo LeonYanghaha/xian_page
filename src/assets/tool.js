@@ -1,35 +1,60 @@
 const axios = require('axios')
 const qs = require('qs')
+const conf = require('./conf/conf.js')
 
 export default {
+  // create_order: function (_self, pid, number, ) {
+  //
+  // },
+  confirm_msg: function (self, title = '提示', str = '确认该操作', ok_cb, cancel_cb) {
+    self.$confirm(str, title, {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(function () {
+      ok_cb()
+    }).catch(function () {
+      cancel_cb()
+    })
+  },
+  recived_order: function (self, oid, cb) {
+    self.$tool.http_tool(
+      { oid: oid },
+      self.current_user.phone,
+      self.url + '/order/recivedOrder',
+      function (data) {
+        self.$tool.check_data(data, cb)
+      }
+    )
+  },
   pay_order: function (self, oid, cb) {
     self.$tool.http_tool(
       { oid: oid },
       self.current_user.phone,
       self.url + '/order/payOrder',
       function (data) {
-        let temp = false
-        if (data === null) {
-          temp = false
-        } else {
-          temp = true
-        }
-        cb(temp)
+        self.$tool.check_data(data, cb)
       }
     )
   },
-  cancel_order: function (self, oid) {
+  cancel_order: function (self, oid, cb) {
     self.$tool.http_tool(
       { oid: oid },
       self.current_user.phone,
       self.url + '/order/cancelOrder',
       function (data) {
-        if (data === null) {
-          return false
-        }
-        return true
+        self.$tool.check_data(data, cb)
       }
     )
+  },
+  check_data: function (data, cb) {
+    let temp = false
+    if (data === null) {
+      temp = false
+    } else {
+      temp = true
+    }
+    cb(temp)
   },
   show_success_msg: function (self, value) {
     self.$message({
@@ -60,17 +85,29 @@ export default {
       data: qs.stringify(data)
     }).then(function (res) {
       if (res.status !== 200) {
-        alert('发生异常')
         return cb(null)
       }
       let data = res.data
       if (data.msg !== 'OK' && data.status !== 200) {
-        alert('失败')
         return cb(null)
       }
       // 成功
       cb(data.data)
     })
+  },
+  check_user: function (self) {
+    let token_key = conf.token_key
+    if (!self.$cookies.isKey(token_key)) {
+      return null
+    }
+    // 往下走，就是目前有合法登录用户的情况
+    return self.$cookies.get(token_key)
+  },
+  format_order_list_status: function (self, order_list) {
+    for (let i = 0; i < order_list.length; i++) {
+      order_list[i] = self.$tool.format_order_status(order_list[i])
+    }
+    return order_list
   },
   // <!--//    status 状态  10  已提交   20 未付款  30 已付款  40 待发货   50 已发货，待收货-->
   // <!--//                 60 收货，交易成功  70 超时未付款，关闭  80 用户主动关闭-->

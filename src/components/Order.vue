@@ -1,9 +1,10 @@
 <template>
   <div class="main">
-    <el-card v-if="order_list==null" class="item_order_none">
+    <el-card v-if="order_list==null || order_list.length<=0" class="item_order_none">
       <span class="el-icon-warning"/>&nbsp;&nbsp;暂无订单
     </el-card>
-    <el-card>
+    <el-card v-if="order_list!=null && order_list.length>0">
+      <span>订单列表</span>
       <div class="item_order" v-for="(item,index) of order_list" :key="index">
         <span>{{item.name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
         <a>查看订单详情</a>
@@ -46,13 +47,7 @@ let get_order_list = function (data, self) {
       if (data === null) {
         return self.$tool.show_error_msg(self, '数据获取失败，请稍后再试')
       }
-      for (let i = 0; i < data.data.length; i++) {
-        if (!data.data[i].status) {
-          continue
-        }
-        data.data[i] = self.$tool.format_order_status(data.data[i])
-      }
-      self.order_list = data.data // 页面数据
+      self.order_list = self.$tool.format_order_list_status(self, data.data) // 页面数据
       self.total_page = data.count // 数据总数
       self.current_page = data.currentPage // 当前页码
     }
@@ -63,10 +58,8 @@ export default {
   data: function () {
     return {
       current_user: null,
-      token_key: conf.token_key,
       order_list: null,
       url: conf.host,
-      http_token_head: conf.http_token_head,
       total_page: 0,
       show_page: 5,
       current_page: 1
@@ -75,76 +68,69 @@ export default {
   methods: {
     change_page: function (page) {
       let _self = this
-      this.current_page = page
+      _self.current_page = page
       get_order_list({ pageShowNumber: _self.show_page, currentPage: _self.current_page }, _self)
     },
     cancel: function (oid) {
       let _self = this
-      _self.$tool.http_tool(
-        { oid: oid },
-        _self.current_user.phone,
-        _self.url + '/order/cancelOrder',
-        function (data) {
-          if (data === null) {
-            return false
+      _self.$tool.confirm_msg(_self, '确定要取消该订单吗？', '提示', function () {
+        _self.$tool.cancel_order(_self, oid, function (data) {
+          if (!data) {
+            return _self.$tool.show_error_msg(_self, '操作失败')
           }
           for (let i = 0; i < _self.order_list.length; i++) {
-            if (oid !== _self.order_list[i].oid) {
-              continue
+            if (oid === _self.order_list[i].oid) {
+              _self.order_list[i].status = 80
             }
-            _self.order_list[i].status = 80
           }
-        }
-      )
+          _self.order_list = _self.$tool.format_order_list_status(_self, _self.order_list)
+          _self.$tool.show_success_msg(_self, '已取消该订单')
+        })
+      }, function () {
+        _self.$tool.show_success_msg(_self, '已取消')
+      })
     },
     recived: function (oid) {
       let _self = this
-      _self.$tool.http_tool(
-        { oid: oid },
-        _self.current_user.phone,
-        _self.url + '/order/recivedOrder',
-        function (data) {
-          if (data === null) {
-            return false
-          }
+      _self.$tool.recived_order(_self, oid, function (data) {
+        if (!data) {
+          return _self.$tool.show_error_msg(_self, '操作失败')
+        } else {
           for (let i = 0; i < _self.order_list.length; i++) {
-            if (oid !== _self.order_list[i].oid) {
-              continue
+            if (oid === _self.order_list[i].oid) {
+              _self.order_list[i].status = 60
+              _self.order_list[i].ReceivedTime = new Date().toDateString()
             }
-            _self.order_list[i].status = 60
-            _self.order_list[i].ReceivedTime = new Date().toDateString()
           }
+          _self.order_list = _self.$tool.format_order_list_status(_self, _self.order_list)
+          _self.$tool.show_success_msg(_self, '订单已收货，已成功操作')
         }
-      )
+      })
     },
     pay: function (oid) {
       let _self = this
-      _self.$tool.http_tool(
-        { oid: oid },
-        _self.current_user.phone,
-        _self.url + '/order/payOrder',
-        function (data) {
-          if (data === null) {
-            return false
-          }
+      _self.$tool.pay_order(_self, oid, function (data) {
+        if (!data) {
+          return _self.$tool.show_error_msg(_self, '操作失败')
+        } else {
           for (let i = 0; i < _self.order_list.length; i++) {
-            if (oid !== _self.order_list[i].oid) {
-              continue
+            if (oid === _self.order_list[i].oid) {
+              _self.order_list[i].status = 30
+              _self.order_list[i].ReceivedTime = new Date().toDateString()
             }
-            _self.order_list[i].status = 30
-            _self.order_list[i].payTime = new Date().toDateString()
           }
+          _self.order_list = _self.$tool.format_order_list_status(_self, _self.order_list)
+          _self.$tool.show_success_msg(_self, '支付成功')
         }
-      )
+      })
     }
   },
   created: function () {
     let _self = this
-    if (!_self.$cookies.isKey(_self.token_key)) {
+    _self.current_user = _self.$tool.check_user(_self)
+    if (_self.current_user === null) {
       return _self.$router.push('/')
     }
-    // 往下走，就是目前有合法登录用户的情况
-    _self.current_user = _self.$cookies.get(_self.token_key)
   },
   mounted: function () {
     let _self = this

@@ -88,11 +88,7 @@ export default {
   },
   mounted: function () {
     let _self = this
-    if (!_self.$cookies.isKey(_self.token_key)) {
-      return false
-    }
-    // 有合法的cookie
-    _self.current_user = _self.$cookies.get(_self.token_key)
+    _self.current_user = _self.$tool.check_user(_self)
   }
 }
 </script>
@@ -101,13 +97,11 @@ export default {
     height: auto;
     width: 69%;
     margin: 2em auto;
-    /*border: 2px solid blue;*/
   }
   .head_area{
     height: 3em;
     display: table-cell;
     vertical-align: bottom;
-    /*border: 2px solid green;*/
   }
   .head_meanu{
     width: 30em;

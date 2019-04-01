@@ -13,14 +13,14 @@
 </template>
 
 <script>
-  export default {
-    name: 'Foot',
-    data:function () {
-      return {
-        year: new Date().getFullYear()
-      }
+export default {
+  name: 'Foot',
+  data: function () {
+    return {
+      year: new Date().getFullYear()
     }
   }
+}
 </script>
 <style scoped>
   .foot_main{

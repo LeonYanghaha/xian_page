@@ -84,19 +84,14 @@ export default {
   .home_meanuList{
     margin: auto;
     width: 69%;
-    /*border: 2px solid black;*/
   }
   .home_meanu{
     width: 19em;
-    /*height: 20em;*/
-    /*border: 2px solid lawngreen;*/
     display: table-cell;
     background-color: ghostwhite;
   }
   .home_img{
     width: 80em;
-    /*height: 20em;*/
-    /*border: 2px solid gold;*/
     display: table-cell;
     padding-left: 0.2em;
   }

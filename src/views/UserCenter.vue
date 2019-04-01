@@ -72,13 +72,11 @@ export default {
     }
   },
   mounted: function () {
-    // 检查当前是否有用户登录，如果没有，就直接跳转到首页
     let _self = this
-    if (!_self.$cookies.isKey(_self.token_key)) {
+    _self.current_user = _self.$tool.check_user(_self)
+    if (_self.current_user === null) {
       return _self.$router.push('/')
     }
-    // 往下走，就是目前有合法登录用户的情况
-    _self.current_user = _self.$cookies.get(_self.token_key)
   }
 }
 </script>
@@ -86,7 +84,6 @@ export default {
 <style scoped>
 .user_main{
   width: 69%;
-  /*border: 2px solid greenyellow;*/
   margin: 5em auto;
 }
 .user_main_table{
@@ -94,10 +91,8 @@ export default {
 }
 .user_main_left{
   width: 15em;
-  /*border: 2px solid red;*/
 }
 .user_main_right{
   width: 85em;
-  /*border: 2px solid blue;*/
 }
 </style>
