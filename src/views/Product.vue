@@ -246,6 +246,7 @@ export default {
           // TODO  2019/3/30 9:32 AM  如果没有查到对应的商品，这里应该有个友好的提示
           return false
         }
+        data = data.data
         for (let i = 0; i < data.length; i++) {
           _self.address_list.push({
             value: data[i].aid,

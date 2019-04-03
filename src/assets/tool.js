@@ -84,7 +84,8 @@ export default {
       url: url,
       data: qs.stringify(data)
     }).then(function (res) {
-      if (res.status !== 200) {
+      if (res.status !== 200) { // TODO  2019/4/3 5:25 PM 对于服务器端返回的错误，这里需要做处理
+        alert(res.status)
         return cb(null)
       }
       let data = res.data
