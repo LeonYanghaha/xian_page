@@ -1,6 +1,10 @@
 <template>
   <div class="meanu_main">
-    <div class="menu_root" v-for="(item,index) in meanuMapper" v-bind:key="index">{{item}}</div>
+    <div class="menu_root"
+         v-for="(item,index) in meanuMapper"
+         v-bind:key="index"
+         @mouseenter="show_item(item)"
+         @mouseleave="hidden_item(item)">{{item}}</div>
   </div>
 </template>
 
@@ -41,19 +45,26 @@ export default {
     }
   },
   methods: {
-    mouseEnterList (event) {
+    show_item (item) {
+      let _self = this
+      _self.$emit('change_show_img', { show_img: false, item: _self.meanuList[item] })
     },
-    mouseLeaveList (string) {
+    hidden_item (item) {
+      this.$emit('change_show_img', { show_img: true })
     }
   }
 }
 </script>
 
 <style scoped>
+   /*.meanu{*/
+     /*width: 100%;*/
+     /*border: 2px solid deeppink;*/
+   /*}*/
   .meanu_main{
     display: inline-block;
     width: 100%;
-    /*border: 1px solid lawngreen;*/
+    border: 1px solid lawngreen;
     vertical-align:bottom;
     text-align: center;
   }
