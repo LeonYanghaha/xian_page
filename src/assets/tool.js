@@ -3,9 +3,6 @@ const qs = require('qs')
 const conf = require('./conf/conf.js')
 
 export default {
-  // create_order: function (_self, pid, number, ) {
-  //
-  // },
   confirm_msg: function (self, title = '提示', str = '确认该操作', ok_cb, cancel_cb) {
     self.$confirm(str, title, {
       confirmButtonText: '确定',
@@ -48,12 +45,7 @@ export default {
     )
   },
   check_data: function (data, cb) {
-    let temp = false
-    if (data === null) {
-      temp = false
-    } else {
-      temp = true
-    }
+    let temp = data !== null
     cb(temp)
   },
   show_success_msg: function (self, value) {
@@ -110,8 +102,8 @@ export default {
     }
     return order_list
   },
-  // <!--//    status 状态  10  已提交   20 未付款  30 已付款  40 待发货   50 已发货，待收货-->
-  // <!--//                 60 收货，交易成功  70 超时未付款，关闭  80 用户主动关闭-->
+  // status 状态  10  已提交   20 未付款  30 已付款  40 待发货   50 已发货，待收货
+  //              60 收货，交易成功  70 超时未付款，关闭  80 用户主动关闭
   format_order_status: function (order) {
     switch (order.status) {
       case 10:

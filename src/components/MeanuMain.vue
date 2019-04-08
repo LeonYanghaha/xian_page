@@ -47,10 +47,10 @@ export default {
   methods: {
     show_item (item) {
       let _self = this
-      _self.$emit('change_show_img', { show_img: false, item: _self.meanuList[item] })
+      _self.$emit('change_show_img', { item: _self.meanuList[item] })
     },
     hidden_item (item) {
-      this.$emit('change_show_img', { show_img: true })
+      this.$emit('change_show_img')
     }
   }
 }

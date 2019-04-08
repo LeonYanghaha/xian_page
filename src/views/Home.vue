@@ -46,20 +46,18 @@ export default {
   },
   methods: {
     change: function (data) {
-      console.log(data)
-      for (let key in data.item) {
-        console.log(key.toString())
+      let _self = this
+      _self.show_img = !(_self.show_img)
+      if (data && data.item) {
+        _self.slide_data = data.item
       }
-      this.show_img = data.show_img
-      if (this.show_img === true) {
-        this.slide_data = data.item
-      }
+      console.log(_self.slide_data)
     }
   },
   data: function () {
     return {
       show_img: true,
-      slide_data: null,
+      slide_data: '',
       show_unit: {
         'food': {
           name: '食物',
