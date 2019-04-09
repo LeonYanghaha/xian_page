@@ -16,10 +16,12 @@
           </el-carousel-item>
         </el-carousel>
       </div>
-      <div class="slide_meanu" v-if="!show_img">
-        ---------------------{{slide_data}}++
-        <div  v-bind="slide_data" v-for="(item, index) in slide_data" v-bind:key="index">
-            {{item + '--'}} -- {{index}}
+      <div class="home_img slide_meanu" v-if="!show_img" @mouseenter="enter_meanu()" @mouseleave="leave_meanu()">
+        <div class="big_type_meanu"  v-bind="slide_data" v-for="(item, index) in slide_data" v-bind:key="index">
+          <span class="big_type_meanu_title"><i class="el-icon-search"></i>&nbsp;&nbsp;{{index}}</span>
+            <span class="big_type_meanu_sign_item" v-for="(sign_item, sign_index) in slide_data[index]" v-bind:key="sign_index">
+              {{sign_item}}
+            </span>
         </div>
       </div>
     </div>
@@ -45,6 +47,12 @@ export default {
     Head, Foot, ProductList, MeanuMain
   },
   methods: {
+    enter_meanu: function () {
+      this.show_img = false
+    },
+    leave_meanu: function () {
+      this.show_img = true
+    },
     change: function (data) {
       let _self = this
       _self.show_img = !(_self.show_img)
@@ -112,12 +120,23 @@ export default {
   .home_img{
     width: 80em;
     display: table-cell;
-    padding-left: 0.2em;
+    /*border: 1px solid firebrick;*/
+    vertical-align: top;
   }
-  .slide_meanu{
-    width: 80em;
-    display: table-cell;
-    padding-left: 0.2em;
-    border: 1px solid firebrick;
+  .big_type_meanu{
+    /*border: 2px solid green;*/
+    margin: 1em 0em 1em 0.5em;
+  }
+  .big_type_meanu_title{
+    font-size: 19px;
+    color: grey;
+    display: block;
+  }
+  .big_type_meanu_sign_item{
+    margin-left: 2em;
+    font-size: 14px;
+  }
+  .slide_meanu {
+    border: 2px solid darkgray;
   }
 </style>

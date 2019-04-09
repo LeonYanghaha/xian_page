@@ -64,14 +64,14 @@ export default {
   .meanu_main{
     display: inline-block;
     width: 100%;
-    border: 1px solid lawngreen;
+    /*border: 1px solid lawngreen;*/
     vertical-align:bottom;
     text-align: center;
   }
   .menu_root{
     display: inline-block;
     width: 100%;
-    height: 2.5em;
+    height: 2.3em;
     padding-top: 2em;
     /*border: 1px solid green;*/
     text-align: center;
