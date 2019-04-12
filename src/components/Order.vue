@@ -7,7 +7,7 @@
       <span>订单列表</span>
       <div class="item_order" v-for = "(item,index) of order_list" :key="index">
         <span>{{item.name}}</span>
-        <span v-if="item.status === 60 || item.status === 80" class="span_delete el-icon-delete" @click="delete_order(item.oid)"></span>
+        <span v-if="delete_order_status.indexOf(item.status)!==-1" class="span_delete el-icon-delete" @click="delete_order(item.oid)"></span>
         <span class="span_order_detial">查看订单详情</span>
         <br/>
         订单状态：{{item.msg}}
@@ -63,7 +63,8 @@ export default {
       url: conf.host,
       total_page: 0,
       show_page: 5,
-      current_page: 1
+      current_page: 1,
+      delete_order_status: [60, 70, 80]
     }
   },
   methods: {
@@ -77,8 +78,8 @@ export default {
         }
       }
       // status 状态  10  已提交   20 未付款  30 已付款  40 待发货   50 已发货，待收
-      // 60 收货，交易成功  70 超时未付款，关闭  80 用户主动关闭
-      if (temp_order.status === 60 || temp_order.status === 80) { // 只有用户主动取消或交易完成的订单才能删除
+      // 60 收货，交易成功  70 超时未付款，关闭  80 用户主动关闭  这三种状态可以删除，其余状态不能删除
+      if (!(_self.delete_order_status.indexOf(temp_order.status) === -1)) {
         _self.$tool.confirm_msg(
           _self,
           '警告⚠️',
@@ -92,6 +93,8 @@ export default {
                 if (data === null) {
                   return _self.$tool.show_error_msg(_self, '删除失败')
                 }
+                // 从当前页面数据中移除该条数据
+                _self.order_list = _self.$tool.remove_order_from_list(_self.order_list, oid)
                 _self.$tool.show_success_msg(_self, '删除成功')
               })
           },

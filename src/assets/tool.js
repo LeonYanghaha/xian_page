@@ -19,7 +19,7 @@ export default {
       { oid: oid },
       self.current_user.phone,
       self.url + '/order/recivedOrder',
-      function (data) {
+      function (data, token) {
         self.$tool.check_data(data, cb)
       }
     )
@@ -29,8 +29,9 @@ export default {
       { oid: oid },
       self.current_user.phone,
       self.url + '/order/payOrder',
-      function (data) {
+      function (data, token) {
         self.$tool.check_data(data, cb)
+        self.$tool.update_token(token, self)
       }
     )
   },
@@ -39,10 +40,18 @@ export default {
       { oid: oid },
       self.current_user.phone,
       self.url + '/order/cancelOrder',
-      function (data) {
+      function (data, token) {
         self.$tool.check_data(data, cb)
       }
     )
+  },
+  update_token: function (token, self) {
+    if (!token) {
+      return null
+    }
+    if (self && self.current_user) {
+      self.current_user.phone = token
+    }
   },
   check_data: function (data, cb) {
     let temp = data !== null
@@ -66,7 +75,9 @@ export default {
       type: 'warning'
     })
   },
+  // TODO  2019/4/10 5:46 PM  代码架构有问题，导致现在前端每次刷新token是很费劲的工作
   http_tool: function (data, token, url, cb) {
+    const header_key = conf.token_key
     axios({
       headers: {
         'deviceCode': 'A95ZEF1-47B5-AC90BF3',
@@ -80,12 +91,14 @@ export default {
         alert(res.status)
         return cb(null)
       }
+      debugger
       let data = res.data
       if (data.msg !== 'OK' && data.status !== 200) {
         return cb(null)
       }
       // 成功
-      cb(data.data)
+      let new_token = res.headers[header_key]
+      cb(data.data, new_token)
     })
   },
   check_user: function (self) {
@@ -95,6 +108,15 @@ export default {
     }
     // 往下走，就是目前有合法登录用户的情况
     return self.$cookies.get(token_key)
+  },
+  remove_order_from_list: function (list, oid) {
+    let temp = []
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].oid !== oid) {
+        temp.push(list[i])
+      }
+    }
+    return temp
   },
   format_order_list_status: function (self, order_list) {
     for (let i = 0; i < order_list.length; i++) {
