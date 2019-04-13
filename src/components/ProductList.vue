@@ -1,6 +1,10 @@
 <template>
   <div class="list_main">
-    <div>{{item.name}}</div>
+    <div class="title_main">
+      <i class="el-icon-d-arrow-right"/>
+      {{item.name}}
+      <i class="el-icon-d-arrow-left"></i>
+    </div>
     <div v-for="(item, index) in list_data" v-bind:key="index" class="sign_product_main">
       <router-link v-bind:to="'/product/'+item.pid"  v-bind:pid="item.pid" target="_blank">
         <img class="product_main_img" v-bind:src='item.img'/>
@@ -33,7 +37,9 @@ export default {
   mounted: function () {
     let _self = this
     _self.$tool.http_tool(
-      { pageShowNumber: _self.item.pageShowNumber, currentPage: _self.item.currentPage }, null, _self.url + _self.item.url,
+      { pageShowNumber: _self.item.pageShowNumber, currentPage: _self.item.currentPage },
+      null,
+      _self.url + _self.item.url,
       function (data) {
         if (data.data.length <= 0) {
           // TODO  2019/3/30 9:54 AM 后端没有返回数据的情况 应该有提示
@@ -86,5 +92,10 @@ export default {
     color: brown;
     font-style: italic;
     margin-left: 3em;
+  }
+  .title_main{
+    font-size: 17px;
+    margin: 1em;
+
   }
 </style>

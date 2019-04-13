@@ -16,10 +16,15 @@
           </el-carousel-item>
         </el-carousel>
       </div>
-      <div class="home_img slide_meanu" v-if="!show_img" @mouseenter="enter_meanu()" @mouseleave="leave_meanu()">
-        <div class="big_type_meanu"  v-bind="slide_data" v-for="(item, index) in slide_data" v-bind:key="index">
+      <div class="home_img slide_meanu" v-if="!show_img"
+           @mouseenter="enter_meanu()"
+           @mouseleave="leave_meanu()">
+        <div class="big_type_meanu"  v-bind="slide_data" v-for="(item, index) in slide_data"
+             v-bind:key="index">
           <span class="big_type_meanu_title"><i class="el-icon-search"></i>&nbsp;&nbsp;{{index}}</span>
-            <span class="big_type_meanu_sign_item" v-for="(sign_item, sign_index) in slide_data[index]" v-bind:key="sign_index">
+            <span class="big_type_meanu_sign_item"
+                  v-for="(sign_item, sign_index) in slide_data[index]"
+                  v-bind:key="sign_index">
               {{sign_item}}
             </span>
         </div>
@@ -59,7 +64,7 @@ export default {
       if (data && data.item) {
         _self.slide_data = data.item
       }
-      console.log(_self.slide_data)
+      // console.log(_self.slide_data)
     }
   },
   data: function () {

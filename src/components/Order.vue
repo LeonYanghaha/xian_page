@@ -7,31 +7,41 @@
       <span>订单列表</span>
       <div class="item_order" v-for = "(item,index) of order_list" :key="index">
         <span>{{item.name}}</span>
-        <span v-if="delete_order_status.indexOf(item.status)!==-1" class="span_delete el-icon-delete" @click="delete_order(item.oid)"></span>
+        <span v-if="delete_order_status.indexOf(item.status)!==-1"
+              class="span_delete el-icon-delete"
+              @click="delete_order(item.oid)"></span>
         <span class="span_order_detial">查看订单详情</span>
         <br/>
         订单状态：{{item.msg}}
-        <el-button v-if="item.status === 50" type="primary" size="small"  @click="recived(item.oid)" plain>
+        <el-button v-if="item.status === 50" type="primary"
+                   size="small"  @click="recived(item.oid)" plain>
           确认收货
         </el-button>
-        <el-button v-if="item.status === 10 || item.status === 20" type="primary" size="small"  @click="pay(item.oid)" plain>
+        <el-button v-if="item.status === 10 || item.status === 20"
+                   type="primary" size="small"  @click="pay(item.oid)" plain>
           去付款
         </el-button>
-        <el-button v-if="item.status === 10 || item.status === 20" type="danger" size="small"  @click="cancel(item.oid)" plain>
+        <el-button v-if="item.status === 10 || item.status === 20"
+                   type="danger" size="small"  @click="cancel(item.oid)" plain>
           取消订单
         </el-button>
         <br/>
         总价格：{{item.totalPrice}}<br/>
         下单时间：{{item.submitTime}}<br/>
-        <span v-if="item.status>=30 && item.status!==70 && item.status!==80">付款时间：{{item.payTime}} <br/> </span>
-        <span v-if="item.status>=50 && item.status!==70 && item.status!==80">发货时间：{{item.pushTime}}
-          <br/>
+        <span v-if="item.status>=30 && item.status!==70 && item.status!==80">
+          付款时间：{{item.payTime}} <br/>
         </span>
-        <span v-if="item.status>=60 && item.status!==70 && item.status!==80">收货时间：{{item.ReceivedTime}} <br/> </span>
+        <span v-if="item.status>=50 && item.status!==70 && item.status!==80">
+          发货时间：{{item.pushTime}}<br/>
+        </span>
+        <span v-if="item.status>=60 && item.status!==70 && item.status!==80">
+          收货时间：{{item.ReceivedTime}} <br/>
+        </span>
         <hr/>
       </div>
       <span class="page_span">
-        <el-pagination layout="prev, pager, next" :total="total_page" @current-change="change_page" :page-size="show_page">
+        <el-pagination layout="prev, pager, next" :total="total_page"
+                       @current-change="change_page" :page-size="show_page">
         </el-pagination>
       </span>
     </el-card>

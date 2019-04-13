@@ -91,7 +91,6 @@ export default {
         alert(res.status)
         return cb(null)
       }
-      debugger
       let data = res.data
       if (data.msg !== 'OK' && data.status !== 200) {
         return cb(null)

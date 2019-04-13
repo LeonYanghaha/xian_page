@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import Product from './views/Product.vue'
 import User from './views/User.vue'
 import UserCenter from './views/UserCenter.vue'
+import ShowList from './views/ShowList.vue'
 
 Vue.use(Router)
 
@@ -15,6 +16,12 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/list/:kw',
+      name: 'ShowList',
+      component: ShowList,
+      props: true
     },
     {
       path: '/about',

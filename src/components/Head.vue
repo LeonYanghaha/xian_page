@@ -13,12 +13,13 @@
     </div>
     <div class="head_area search_input">
       <el-autocomplete
-        v-model="state4"
+        v-model="search_input_val"
         size="mini"
-        :fetch-suggestions="querySearchAsync"
+        :fetch-suggestions="get_hot_product_list"
         placeholder="请输入要搜索的东西."
         @select="handle_select">
-        <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-button slot="append" icon="el-icon-search" @click="search_product()">搜索
+        </el-button>
       </el-autocomplete>
     </div>
     <div class="head_area head_meta">
@@ -61,6 +62,8 @@
         <span @click="show_msg()" class="user_exit">退出登录</span>
       </div>
     </div>
+    <br/>
+    <hr>
   </div>
 </template>
 
@@ -73,44 +76,35 @@ export default {
     return {
       current_user: null,
       token_key: conf.token_key,
-      hot_product: [],
-      state4: '',
-      timeout: null
+      hot_product_list: [],
+      search_input_val: '',
+      timeout: null,
+      url: conf.host
     }
   },
   store,
   methods: {
-    getHotProduct () {
+    search_product () {
       let _self = this
-      _self.$tool.http_tool(null, null, '/product/getHotProduct', function (data, token) {
-        return data
-      })
-
-      // return [{ 'value': '三全鲜食（北新泾店）', 'address': '长宁区新渔路144号' },
-      //   { 'value': 'Hot honey 首尔炸鸡（仙霞路）', 'address': '上海市长宁区淞虹路661号' },
-      //   { 'value': '新旺角茶餐厅', 'address': '上海市普陀区真北路988号创邑金沙谷6号楼113' },
-      //   { 'value': '泷千家(天山西路店)', 'address': '天山西路438号' },
-      //   { 'value': '胖仙女纸杯蛋糕（上海凌空店）', 'address': '上海市长宁区金钟路968号1幢18号楼一层商铺18-101' },
-      //   { 'value': '贡茶', 'address': '上海市长宁区金钟路633号' },
-      //   { 'value': '南拳妈妈龙虾盖浇饭', 'address': '普陀区金沙江路1699号鑫乐惠美食广场A13' }
-      // ]
+      _self.to_product_list(_self.search_input_val)
     },
-    querySearchAsync (queryString, cb) {
-      let hot_product = this.hot_product
-      let results = queryString ? hot_product.filter(this.createStateFilter(queryString)) : hot_product
-
-      clearTimeout(this.timeout)
-      this.timeout = setTimeout(() => {
-        cb(results)
-      }, 3000 * Math.random())
-    },
-    createStateFilter (queryString) {
-      return (state) => {
-        return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+    to_product_list: function (query_word) {
+      let _self = this
+      if (!query_word) {
+        return false
       }
+      _self.$router.push('/list/' + query_word)
+    },
+    get_hot_product_list (queryString, cb) {
+      let _self = this
+      _self.$tool.http_tool(null, null, _self.url + '/product/getHotProduct',
+        function (data, token) {
+          cb(data)
+        })
     },
     handle_select (item) { // 点击选中建议项时触发
-
+      let _self = this
+      _self.to_product_list(item.value)
     },
     show_msg: function () {
       let _self = this
@@ -133,7 +127,6 @@ export default {
   },
   mounted: function () {
     let _self = this
-    _self.hot_product = this.getHotProduct()
     _self.current_user = _self.$tool.check_user(_self)
   }
 }
@@ -157,7 +150,7 @@ export default {
     font-size: 20px;
   }
   .head_meta{
-    width: 13em;
+    width: 11em;
     text-align: right;
     /*border: 1px solid lawngreen;*/
   }
