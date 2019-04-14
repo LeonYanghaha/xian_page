@@ -3,6 +3,30 @@ const qs = require('qs')
 const conf = require('./conf/conf.js')
 
 export default {
+  get_product_list: function (self, item, cb) {
+    self.$tool.http_tool(
+      { pageShowNumber: item.pageShowNumber, currentPage: item.currentPage },
+      null,
+      self.url + item.url,
+      function (data) {
+        if (data.data.length <= 0) {
+          // TODO  2019/3/30 9:54 AM 后端没有返回数据的情况 应该有提示
+          return false
+        }
+        let product_list = []
+        for (let i = 0; i < data.data.length; i++) {
+          let signItem = data.data[i]
+          product_list.push({
+            'name': data.data[i].name,
+            'pid': signItem.pid ? signItem.pid : signItem['strPid'],
+            'price': signItem.price,
+            'img': self.img_host + signItem['productImgList'][0].name
+          })
+        }
+        cb(product_list)
+      }
+    )
+  },
   confirm_msg: function (self, title = '提示', str = '确认该操作', ok_cb, cancel_cb) {
     self.$confirm(str, title, {
       confirmButtonText: '确定',

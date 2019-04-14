@@ -93,14 +93,22 @@ export default {
       if (!query_word) {
         return false
       }
+      // 当子组件拿到变化后的值，不仅仅是跟新URL。
+      // 还应该去通知父组件
+      _self.$emit('key_word_change', { kw: query_word })
       _self.$router.push('/list/' + query_word)
     },
     get_hot_product_list (queryString, cb) {
       let _self = this
-      _self.$tool.http_tool(null, null, _self.url + '/product/getHotProduct',
-        function (data, token) {
-          cb(data)
-        })
+      if (_self.hot_product_list.length <= 0 || _self.hot_product_list === null) {
+        _self.$tool.http_tool(null, null, _self.url + '/product/getHotProduct',
+          function (data, token) {
+            _self.hot_product_list = data
+            cb(data)
+          })
+      } else {
+        cb(_self.hot_product_list)
+      }
     },
     handle_select (item) { // 点击选中建议项时触发
       let _self = this

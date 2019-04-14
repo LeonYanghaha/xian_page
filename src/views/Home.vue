@@ -32,7 +32,9 @@
     </div>
     <div class="home_product_list">
       <div class="home_product_type_list">
-        <ProductList v-for="(item,index)  in show_unit" v-bind:key="index" v-bind:item="item">
+        <ProductList v-for="(item,index)  in show_unit"
+                     v-bind:key="index"
+                     v-bind:item="item">
         </ProductList>
       </div>
     </div>

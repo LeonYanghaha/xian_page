@@ -6,13 +6,21 @@
         用户名：
         <el-input class="input_area" v-model="un" placeholder="请输入用户名">
         </el-input><br/>
-        密&nbsp;&nbsp;&nbsp;码：<el-input  class="input_area" v-model="pw" placeholder="请输入密码"></el-input><br/>
+        密&nbsp;&nbsp;&nbsp;码：
+        <el-input  class="input_area" v-model="pw" placeholder="请输入密码">
+        </el-input><br/>
         <el-button type="primary" @click="login()" plain>登&nbsp;&nbsp;&nbsp;&nbsp;录</el-button>
       </div>
       <div v-if="active === 'regist'" class="regist_main active_main">
-        用&nbsp;户&nbsp;名：<el-input class="input_area" v-model="un" placeholder="请输入用户名"></el-input><br/>
-        密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：<el-input class="input_area" v-model="pw" placeholder="请输入密码"></el-input><br/>
-        确认密码：<el-input  class="input_area" v-model="repw" placeholder="请输入确认密码"></el-input><br/>
+        用&nbsp;户&nbsp;名：
+        <el-input class="input_area" v-model="un" placeholder="请输入用户名">
+        </el-input><br/>
+        密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：
+        <el-input class="input_area" v-model="pw" placeholder="请输入密码">
+        </el-input><br/>
+        确认密码：
+        <el-input  class="input_area" v-model="repw" placeholder="请输入确认密码">
+        </el-input><br/>
         <el-button type="primary" @click="regist()" plain>注&nbsp;&nbsp;&nbsp;&nbsp;册</el-button>
       </div>
     </div>

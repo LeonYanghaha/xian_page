@@ -6,7 +6,8 @@
         <el-row class="tac">
           <el-col>
             <h5>用户中心</h5>
-            <el-menu :default-active='tag' class="el-menu-vertical-demo" @select="handleSelect">
+            <el-menu :default-active='tag' class="el-menu-vertical-demo"
+                     @select="handleSelect">
               <el-menu-item index="datum">
                 <i class="el-icon-menu"></i>
                 <span slot="title">个人资料</span>

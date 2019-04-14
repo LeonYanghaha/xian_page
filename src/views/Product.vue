@@ -3,42 +3,101 @@
     <Head></Head>
     <div class="order_submit_after" v-if="oid !== 0">
       <el-card class="box-card">
-        <span class="info_title" style="color: green; font-size: 20px;"><i class="el-icon-success"></i>
+        <span class="info_title"
+              style="color: green; font-size: 20px;">
+          <i class="el-icon-success"></i>
           &nbsp;&nbsp;&nbsp;&nbsp;订单已提交成功
         </span>
-        <span class="info_line"><div class="info_column_name">ID:</div>{{current_order.oid}}</span>
-        <span class="info_line"><div class="info_column_name">订单名:</div>{{current_order.name}}</span>
-        <span class="info_line"><div class="info_column_name">收货地址:</div>{{current_order.aadderss}}</span>
-        <span class="info_line"><div class="info_column_name">收件人:</div>{{current_order.aname}}</span>
-        <span class="info_line"><div class="info_column_name">收货电话号码:</div>{{current_order.aphone}}</span>
-        <span class="info_line"><div class="info_column_name">下单时间:</div>{{current_order.submitTime}}</span>
-        <span class="info_line"><div class="info_column_name">订单状态:</div>{{current_order.msg}}</span>
-        <span class="info_line"><div class="info_column_name">订单总价格:</div>{{current_order.totalPrice}}</span>
-        <span class="info_line"><div class="info_column_name">订单详情:</div>
-          <span class="order_detial" v-for="(item,index) in current_order.orderDetial" v-bind:key="index">
+        <span class="info_line">
+          <div class="info_column_name">
+            ID:
+          </div>{{current_order.oid}}
+        </span>
+        <span class="info_line">
+          <div class="info_column_name">
+            订单名:
+          </div>{{current_order.name}}
+        </span>
+        <span class="info_line">
+          <div class="info_column_name">
+            收货地址:
+          </div>{{current_order.aadderss}}
+        </span>
+        <span class="info_line">
+          <div class="info_column_name">
+            收件人:
+          </div>{{current_order.aname}}
+        </span>
+        <span class="info_line">
+          <div class="info_column_name">
+            收货电话号码:
+          </div>{{current_order.aphone}}
+        </span>
+        <span class="info_line">
+          <div class="info_column_name">
+            下单时间:
+          </div>{{current_order.submitTime}}
+        </span>
+        <span class="info_line">
+          <div class="info_column_name">
+            订单状态:
+          </div>{{current_order.msg}}
+        </span>
+        <span class="info_line">
+          <div class="info_column_name">
+            订单总价格:
+          </div>{{current_order.totalPrice}}
+        </span>
+        <span class="info_line">
+          <div class="info_column_name">
+            订单详情:
+          </div>
+          <span class="order_detial"
+                v-for="(item,index) in current_order.orderDetial"
+                v-bind:key="index">
             商品名：{{item.pname}}<br/>
             数量：{{item.number}}<br/>
             单价：{{item.price}}<br/>
           </span>
         </span>
         <div class="info_btn">
-          <el-button type="primary" @click="pay_order" plain>去付款</el-button>
+          <el-button type="primary" @click="pay_order" plain>去付款
+          </el-button>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <el-button type="danger" @click="cancel_order" plain>取消订单</el-button>
+          <el-button type="danger" @click="cancel_order" plain>取消订单
+          </el-button>
         </div>
       </el-card>
     </div>
     <div class="product_main" v-if="oid===0">
       <div class="product_head">
         <div class="product_img">
-          <img class="product_main_img" v-bind:src="img_host + current_product.productImgList[0].name">
+          <img class="product_main_img"
+               v-bind:src="img_host + current_product.productImgList[0].name">
         </div>
         <div class="product_meta">
-          <span class="meta_span"><div class="meta_column_name">商品名：</div>{{current_product.name}}</span>
-          <span class="meta_span"><div class="meta_column_name">价格：</div>{{current_product.price}}</span>
-          <span class="meta_span"><div class="meta_column_name">上架时间：</div>{{current_product.pushTime}}</span>
-          <span class="meta_span"><div class="meta_column_name">总价格：</div>{{total_price}}</span>
-          <span class="meta_span"><div class="meta_column_name">选择数量：</div>
+          <span class="meta_span">
+            <div class="meta_column_name">
+              商品名：
+            </div>{{current_product.name}}
+          </span>
+          <span class="meta_span">
+            <div class="meta_column_name">
+              价格：
+            </div>{{current_product.price}}
+          </span>
+          <span class="meta_span">
+            <div class="meta_column_name">
+              上架时间：
+            </div>{{current_product.pushTime}}
+          </span>
+          <span class="meta_span">
+            <div class="meta_column_name">
+              总价格：
+            </div>{{total_price}}
+          </span>
+          <span class="meta_span">
+            <div class="meta_column_name">选择数量：</div>
             <el-input-number v-model="number" size="mini"
                              @change="handle_change"
                              :min="1"
@@ -46,21 +105,36 @@
                              label="选择数量">
             </el-input-number>
           </span>
-          <span class="meta_span"><div class="meta_column_name">收货地址：</div>
-            <el-select v-model="label_info" size="mini" @focus="check_user">
-              <el-option v-for="item in address_list" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          <span class="meta_span">
+            <div class="meta_column_name">
+              收货地址：
+            </div>
+            <el-select v-model="label_info"
+                       size="mini"
+                       @focus="check_user">
+              <el-option v-for="item in address_list"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value">
+              </el-option>
             </el-select>&nbsp;&nbsp;&nbsp;&nbsp;
             <el-button size="mini" plain>添加地址</el-button>
           </span>
           <span class="meta_span">
             <div class="meta_column_name">订单附言：</div>
-            <el-input style="width: 30em" v-model="order_meta" placeholder="请输入内容"></el-input>
+            <el-input style="width: 30em"
+                      v-model="order_meta"
+                      placeholder="请输入内容"></el-input>
           </span>
           <span class="meta_btn">
-            <el-button type="primary" @click="add_car" v-bind:disabled="car_btn_is_disable" plain>
+            <el-button type="primary"
+                       @click="add_car"
+                       v-bind:disabled="car_btn_is_disable" plain>
               <i class="el-icon-sold-out"></i>&nbsp;&nbsp;加入购物车
             </el-button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <el-button type="primary" @click="submit_order" v-bind:disabled="submit_btn_is_disable" plain>
+            <el-button type="primary"
+                       @click="submit_order"
+                       v-bind:disabled="submit_btn_is_disable" plain>
               <i class="el-icon-tickets"></i>&nbsp;&nbsp;提交订单
             </el-button>
           </span>
@@ -68,21 +142,49 @@
       </div>
       <div class="product_info">
         <hr/>
-        <span><div class="info_list">商品名：</div>{{current_product.name}}</span><br/>
-        <span><div class="info_list">商品简介：</div>{{current_product.desc}}</span><br/>
-        <span><div class="info_list">价格：</div>￥{{current_product.price}}</span><br/>
-        <span><div class="info_list">销量：</div>{{current_product.sellNumber}}件</span><br/>
-        <span><div class="info_list">库存：</div>{{current_product.stock}}件</span><br/>
-        <span><div class="info_list">上架时间：</div>{{current_product.pushTime}}</span><br/>
-        <span><div class="info_list">厂家信息：</div>
+        <span>
+          <div class="info_list">
+          商品名：
+          </div>{{current_product.name}}
+        </span><br/>
+        <span>
+          <div class="info_list">商品简介：
+          </div>{{current_product.desc}}
+        </span><br/>
+        <span>
+          <div class="info_list">价格：
+          </div>￥{{current_product.price}}
+        </span><br/>
+        <span>
+          <div class="info_list">销量：
+          </div>{{current_product.sellNumber}}件
+        </span><br/>
+        <span>
+          <div class="info_list">库存：
+          </div>{{current_product.stock}}件
+        </span><br/>
+        <span>
+          <div class="info_list">上架时间：
+          </div>{{current_product.pushTime}}
+        </span><br/>
+        <span>
+          <div class="info_list">厂家信息：</div>
           <div class="product_create_info">
-            <span class="create_info">生产商地址：{{current_product.create.caddress}}</span><br/>
-            <span class="create_info">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;生产商：{{current_product.create.cname}}</span><br/>
-            <span class="create_info">生产商简介：{{current_product.create.cdesc}}</span><br/>
+            <span class="create_info">
+              生产商地址：{{current_product.create.caddress}}
+            </span><br/>
+            <span class="create_info">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;生产商：{{current_product.create.cname}}
+            </span><br/>
+            <span class="create_info">
+              生产商简介：{{current_product.create.cdesc}}
+            </span><br/>
           </div>
         </span><br/>
         <div class="info_list_img">
-          <img v-for="(item, index) in current_product.productImgList" v-bind:key="index" v-bind:src="img_host + item.name"/>
+          <img v-for="(item, index) in current_product.productImgList"
+               v-bind:key="index"
+               v-bind:src="img_host + item.name"/>
         </div>
       </div>
     </div>
@@ -123,17 +225,24 @@ export default {
     cancel_order: function () {
       let _self = this
       let oid = _self.current_order.oid
-      _self.$tool.confirm_msg(_self, '确定要取消该订单吗？', '提示', function () {
-        _self.$tool.cancel_order(_self, oid, function (data) {
-          if (!data) {
-            return _self.$tool.show_error_msg(_self, '操作失败')
-          }
-          _self.order_list = _self.$tool.format_order_list_status(_self, _self.order_list)
-          _self.$tool.show_success_msg(_self, '已取消该订单')
+      _self.$tool.confirm_msg(
+        _self,
+        '确定要取消该订单吗？',
+        '提示',
+        function () {
+          _self.$tool.cancel_order(
+            _self,
+            oid,
+            function (data) {
+              if (!data) {
+                return _self.$tool.show_error_msg(_self, '操作失败')
+              }
+              _self.order_list = _self.$tool.format_order_list_status(_self, _self.order_list)
+              _self.$tool.show_success_msg(_self, '已取消该订单')
+            })
+        }, function () {
+          _self.$tool.show_success_msg(_self, '已取消')
         })
-      }, function () {
-        _self.$tool.show_success_msg(_self, '已取消')
-      })
     },
     pay_order: function () {
       let _self = this
@@ -171,7 +280,10 @@ export default {
       let data = {
         pid: _self.pid
       }
-      _self.$tool.http_tool(data, _self.current_user.phone, _self.url + '/car/addItemToCar',
+      _self.$tool.http_tool(
+        data,
+        _self.current_user.phone,
+        _self.url + '/car/addItemToCar',
         function (data) {
           _self.$tool.show_success_msg(_self, '添加成功')
         })

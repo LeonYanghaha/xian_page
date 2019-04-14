@@ -21,7 +21,6 @@
 
 <script>
 import conf from '../assets/conf/conf.js'
-
 export default {
   name: 'ProductList',
   props: ['item'],
@@ -29,33 +28,34 @@ export default {
     return {
       url: conf.host,
       img_host: conf.img_host,
-      list_data: []
+      list_data: [],
+      key_word: '',
+      tempObj: null
     }
   },
   watch: {
+    getorderid (curval, oldval) {
+      curval = curval.trim()
+      if (curval === '') {
+        return false
+      }
+      let _self = this
+      _self.item.url = curval
+      _self.$tool.get_product_list(_self, _self.item, function (data) {
+        _self.list_data = data
+      })
+    }
+  },
+  computed: { // 同步了store中state内的orderid值
+    getorderid () {
+      return this.$store.state.query_word
+    }
   },
   mounted: function () {
     let _self = this
-    _self.$tool.http_tool(
-      { pageShowNumber: _self.item.pageShowNumber, currentPage: _self.item.currentPage },
-      null,
-      _self.url + _self.item.url,
-      function (data) {
-        if (data.data.length <= 0) {
-          // TODO  2019/3/30 9:54 AM 后端没有返回数据的情况 应该有提示
-          return false
-        }
-        for (let i = 0; i < data.data.length; i++) {
-          let signItem = data.data[i]
-          _self.list_data.push({
-            'name': data.data[i].name,
-            'pid': signItem.pid,
-            'price': signItem.price,
-            'img': _self.img_host + signItem.productImgList[0].name
-          })
-        }
-      }
-    )
+    _self.$tool.get_product_list(_self, _self.item, function (data) {
+      _self.list_data = data
+    })
   }
 }
 </script>
