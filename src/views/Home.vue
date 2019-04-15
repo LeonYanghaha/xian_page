@@ -9,32 +9,34 @@
       <div class="home_img" v-if="show_img">
         <el-carousel height="350px">
           <el-carousel-item v-for="index in 4" :key="index">
-            <img class="slide_img" src="../assets/img/slide_1.jpg" v-if="index === 4"/>
-            <img class="slide_img" src="../assets/img/slide_2.jpg" v-if="index === 1"/>
-            <img class="slide_img" src="../assets/img/slide_3.jpg" v-if="index === 2"/>
-            <img class="slide_img" src="../assets/img/slide_4.jpg" v-if="index === 3"/>
+            <img class="slide_img"
+                 v-if = "key === index-1"
+                 v-for = "(img, key) in slide_img_data"
+                 v-bind:key = "key"
+                 v-bind:alt = "img.desc"
+                 v-bind:src = "img.url"/>
           </el-carousel-item>
         </el-carousel>
       </div>
       <div class="home_img slide_meanu" v-if="!show_img"
-           @mouseenter="enter_meanu()"
-           @mouseleave="leave_meanu()">
-        <div class="big_type_meanu"  v-bind="slide_data" v-for="(item, index) in slide_data"
-             v-bind:key="index">
-          <span class="big_type_meanu_title"><i class="el-icon-search"></i>&nbsp;&nbsp;{{index}}</span>
-            <span class="big_type_meanu_sign_item"
-                  v-for="(sign_item, sign_index) in slide_data[index]"
-                  v-bind:key="sign_index">
+           @mouseenter = "enter_meanu()"
+           @mouseleave = "leave_meanu()">
+        <div class="big_type_meanu"  v-bind = "slide_data" v-for = "(item, index) in slide_data"
+             v-bind:key = "index">
+          <span class = "big_type_meanu_title"><i class = "el-icon-search"></i>&nbsp;&nbsp;{{index}}</span>
+            <span class = "big_type_meanu_sign_item"
+                  v-for = "(sign_item, sign_index) in slide_data[index]"
+                  v-bind:key = "sign_index">
               {{sign_item}}
             </span>
         </div>
       </div>
     </div>
-    <div class="home_product_list">
-      <div class="home_product_type_list">
-        <ProductList v-for="(item,index)  in show_unit"
-                     v-bind:key="index"
-                     v-bind:item="item">
+    <div class = "home_product_list">
+      <div class = "home_product_type_list">
+        <ProductList v-for = "(item,index)  in show_unit"
+                     v-bind:key = "index"
+                     v-bind:item = "item">
         </ProductList>
       </div>
     </div>
@@ -47,7 +49,7 @@ import Head from '@/components/Head.vue'
 import Foot from '@/components/Foot.vue'
 import ProductList from '@/components/ProductList.vue'
 import MeanuMain from '@/components/MeanuMain.vue'
-
+import conf from '@/assets/conf/conf.js'
 export default {
   name: 'home',
   components: {
@@ -69,10 +71,25 @@ export default {
       // console.log(_self.slide_data)
     }
   },
+  mounted: function () {
+    // 获取首页的轮播图
+    let _self = this
+    _self.$tool.http_tool(null, null, _self.url + '/page/getIndexSlide', function (data) {
+      _self.slide_img_data = data
+      for (let sign_img of _self.slide_img_data) {
+        sign_img.url = _self.slide_img_host + sign_img.url
+      }
+      // console.log(_self.slide_img_data)
+    })
+  },
   data: function () {
     return {
       show_img: true,
       slide_data: '',
+      slide_img_data: [],
+      url: conf.host,
+      img_url: conf.img_host,
+      slide_img_host: conf.slide_img_host,
       show_unit: {
         'food': {
           name: '食物',

@@ -5,6 +5,9 @@
       {{item.name}}
       <i class="el-icon-d-arrow-left"></i>
     </div>
+    <div class="none_product_info" v-if="list_data.length <= 0">
+        暂无相关数据&nbsp;&nbsp;<i class="el-icon-warning"></i>
+    </div>
     <div v-for="(item, index) in list_data" v-bind:key="index" class="sign_product_main">
       <router-link v-bind:to="'/product/'+item.pid"  v-bind:pid="item.pid" target="_blank">
         <img class="product_main_img" v-bind:src='item.img'/>
@@ -97,5 +100,12 @@ export default {
     font-size: 17px;
     margin: 1em;
 
+  }
+  .none_product_info{
+    font-size: 20px;
+    color: gray;
+    width: 100%;
+    text-align: center;
+    padding: 5em 0em;
   }
 </style>

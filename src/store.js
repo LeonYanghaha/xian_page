@@ -5,17 +5,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token: null,
+    token: '',
     query_word: ''
   },
   mutations: {
     change_query_word (state, data) {
       state.query_word = data.kw
     },
-    user_active (state) {
+    user_token (state, data) {
+      state.token = data
     }
   },
   actions: {
-
   }
 })

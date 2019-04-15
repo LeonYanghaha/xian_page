@@ -41,17 +41,18 @@ export default {
   recived_order: function (self, oid, cb) {
     self.$tool.http_tool(
       { oid: oid },
-      self.current_user.phone,
+      self.$store.state.token,
       self.url + '/order/recivedOrder',
       function (data, token) {
         self.$tool.check_data(data, cb)
+        self.$tool.update_token(token, self)
       }
     )
   },
   pay_order: function (self, oid, cb) {
     self.$tool.http_tool(
       { oid: oid },
-      self.current_user.phone,
+      self.$store.state.token,
       self.url + '/order/payOrder',
       function (data, token) {
         self.$tool.check_data(data, cb)
@@ -62,19 +63,17 @@ export default {
   cancel_order: function (self, oid, cb) {
     self.$tool.http_tool(
       { oid: oid },
-      self.current_user.phone,
+      self.$store.state.token,
       self.url + '/order/cancelOrder',
       function (data, token) {
         self.$tool.check_data(data, cb)
+        self.$tool.update_token(token, self)
       }
     )
   },
   update_token: function (token, self) {
-    if (!token) {
-      return null
-    }
-    if (self && self.current_user) {
-      self.current_user.phone = token
+    if (token && self) {
+      self.$store.commit('user_token', token)
     }
   },
   check_data: function (data, cb) {

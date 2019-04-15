@@ -32,7 +32,7 @@ export default {
       item: {
         name: '关键字的搜索结果',
         url: '/product/search/' + this.kw,
-        currentPage: 0,
+        currentPage: 1,
         pageShowNumber: 16
       }
     }
