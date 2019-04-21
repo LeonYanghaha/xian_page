@@ -3,6 +3,16 @@ const qs = require('qs')
 const conf = require('./conf/conf.js')
 
 export default {
+  add_address: function (self, token, address, cb) {
+    self.$tool.http_tool(
+      { aname: address.name, aadderss: address.address, atag: address.label, aphone: address.phone },
+      token,
+      self.url + '/address/saveAddress',
+      function (data) {
+        cb(data)
+      }
+    )
+  },
   get_product_list: function (self, item, cb) {
     self.$tool.http_tool(
       { pageShowNumber: item.pageShowNumber, currentPage: item.currentPage },

@@ -326,7 +326,7 @@ export default {
         })
     }
   },
-  beforeMount: function () {
+  mounted: function () {
     // 在进入这里之前，应该先检查传入的ID是否合法。
     let _self = this
     if (isNaN(_self.pid)) {
@@ -349,13 +349,24 @@ export default {
     // 往下走，就是目前有合法登录用户的情况
     // 获取当前用户的合法信息之后，去获取地址列表
     _self.current_user = _self.$cookies.get(_self.token_key)
+    // _self.get_address_list(_self, function (data) {
+    //   if (data === null) {
+    //     return false
+    //   }
+    //   data = data.data
+    //   for (let i = 0; i < data.length; i++) {
+    //     _self.address_list.push({
+    //       value: data[i].aid,
+    //       label: data[i].aadderss
+    //     })
+    //   }
+    // })
     _self.$tool.http_tool(
       {},
       _self.current_user.phone,
       _self.url + '/address/getAddressList',
       function (data) {
         if (data === null) {
-          // TODO  2019/3/30 9:32 AM  如果没有查到对应的商品，这里应该有个友好的提示
           return false
         }
         data = data.data
